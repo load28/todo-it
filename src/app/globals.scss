@@ -1,0 +1,29 @@
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  overflow: hidden;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+.layout {
+  display: flex;
+
+  .layoutMain {
+    flex: 1;
+    padding: var(--mantine-spacing-md);
+  }
+}
