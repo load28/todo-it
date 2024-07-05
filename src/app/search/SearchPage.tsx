@@ -22,9 +22,7 @@ export function SearchPage() {
       return { status: VIEW_STATUS.IDLE };
     }
 
-    const result = data.filter((todo) =>
-      todo.description.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
+    const result = data.filter((todo) => todo.description.toLowerCase().includes(searchTerm.toLowerCase()));
     return { status: VIEW_STATUS.SUCCESS, data: result };
   }, [isLoading, searchTerm, data]);
 
@@ -47,8 +45,7 @@ export function SearchPage() {
       <Stack>
         {viewData.status === VIEW_STATUS.IDLE && data ? (
           <SearchResult todos={data} />
-        ) : viewData.status === VIEW_STATUS.SUCCESS &&
-          viewData.data.length > 0 ? (
+        ) : viewData.status === VIEW_STATUS.SUCCESS && viewData.data.length > 0 ? (
           <SearchResult todos={viewData.data} />
         ) : (
           <div>No results</div>

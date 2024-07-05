@@ -9,7 +9,8 @@ export interface Todo {
 export const TODOS: Todo[] = [
   {
     id: '1',
-    description: 'Description 1',
+    description:
+      'Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1zzzz',
     date: '2022-01-01',
     isComplete: true,
     hashtag: ['tag1', 'tag2'],

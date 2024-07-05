@@ -23,8 +23,4 @@ interface ErrorStatus {
   error: Error;
 }
 
-export type ViewStatus<T> =
-  | IdleStatus
-  | LoadingStatus
-  | SuccessStatus<T>
-  | ErrorStatus;
+export type ViewStatus<T> = IdleStatus | LoadingStatus | SuccessStatus<T> | ErrorStatus;

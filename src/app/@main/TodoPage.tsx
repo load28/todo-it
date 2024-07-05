@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  dehydrate,
-  HydrationBoundary,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary, useQueryClient } from '@tanstack/react-query';
 import { TodoList } from './TodoList';
 import { getTodos } from '@/api/todo';
 

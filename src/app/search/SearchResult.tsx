@@ -8,12 +8,7 @@ export function SearchResult({ todos }: { todos: Todo[] }) {
         return (
           <Group key={todo.id} justify="space-between">
             <Group gap={48}>
-              <Checkbox
-                id={todo.id}
-                checked={todo.isComplete}
-                readOnly={true}
-                label={todo.description}
-              />
+              <Checkbox id={todo.id} checked={todo.isComplete} readOnly={true} label={todo.description} />
               <Group gap={12}>
                 {todo.hashtag.map((tag, index) => {
                   return (

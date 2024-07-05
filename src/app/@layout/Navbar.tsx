@@ -15,12 +15,7 @@ export function Navbar() {
   const currentPath = usePathname();
 
   const links = data.map((item) => (
-    <Link
-      key={item.link}
-      className={classes.link}
-      data-active={item.link === currentPath || undefined}
-      href={item.link}
-    >
+    <Link key={item.link} className={classes.link} data-active={item.link === currentPath || undefined} href={item.link}>
       <item.icon className={classes.linkIcon} stroke={2.0} />
       <span>{item.label}</span>
     </Link>

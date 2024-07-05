@@ -1,10 +1,5 @@
 import { Navbar } from '@/app/@layout/Navbar';
-import {
-  ColorSchemeScript,
-  createTheme,
-  MantineProvider,
-  Stack,
-} from '@mantine/core';
+import { ColorSchemeScript, createTheme, MantineProvider, Stack } from '@mantine/core';
 import '@mantine/core/styles.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
