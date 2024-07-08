@@ -1,18 +1,14 @@
 .todoContainer {
-  cursor: pointer;
-  padding: rem(8px) rem(8px);
+    cursor: pointer;
+    padding: rem(8px) rem(8px);
 
-  &:hover {
-    border-radius: var(--mantine-radius-md);
-    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-2));
-  }
+    &:hover {
+        border-radius: var(--mantine-radius-md);
+        background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-2));
+    }
 }
 
 .todoLabel {
-  cursor: pointer;
-  user-select: none;
-}
-
-.todoDivider {
-  border-bottom: rem(1px) solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-3));
+    cursor: pointer;
+    user-select: none;
 }
