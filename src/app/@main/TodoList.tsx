@@ -1,12 +1,11 @@
 import { Todo } from '@/api/todo';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import React, { ChangeEvent, useState } from 'react';
-import { ActionIcon, Badge, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
+import React, { ChangeEvent } from 'react';
+import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import classes from '@/app/@main/TodoList.module.css';
-import { IconArrowBack, IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
+import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
 
 export function TodoList({ todos, date }: { todos: Todo[]; date: string }) {
-  const [mode, setMode] = useState<'view' | 'edit'>('view');
   const queryClient = useQueryClient();
   const todoMutation = useMutation({
     mutationKey: ['todos'],
@@ -32,7 +31,7 @@ export function TodoList({ todos, date }: { todos: Todo[]; date: string }) {
   };
 
   const editHandler = () => {
-    setMode('edit');
+    // open modal
   };
 
   return (
@@ -41,27 +40,21 @@ export function TodoList({ todos, date }: { todos: Todo[]; date: string }) {
         <Text size="md" fw={700} c="gray.8">
           {date}
         </Text>
-        {mode === 'view' ? (
-          <Menu width={180} styles={{ itemLabel: { fontSize: '12px' } }} position={'bottom-end'}>
-            <Menu.Target>
-              <ActionIcon size={'sm'} color={'gray.6'} variant={'subtle'}>
-                <IconDotsVertical size={16} />
-              </ActionIcon>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item leftSection={<IconEdit size={14} />} onClick={editHandler}>
-                Edit
-              </Menu.Item>
-              <Menu.Item leftSection={<IconTrash size={14} />} styles={{ item: { color: 'red' } }}>
-                Delete
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        ) : (
-          <ActionIcon size={20} color={'gray.6'} variant={'subtle'} onClick={() => setMode('view')}>
-            <IconArrowBack />
-          </ActionIcon>
-        )}
+        <Menu width={180} styles={{ itemLabel: { fontSize: '12px' } }} position={'bottom-end'}>
+          <Menu.Target>
+            <ActionIcon size={'sm'} color={'gray.6'} variant={'subtle'}>
+              <IconDotsVertical size={16} />
+            </ActionIcon>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Item leftSection={<IconEdit size={14} />} onClick={editHandler}>
+              Edit
+            </Menu.Item>
+            <Menu.Item leftSection={<IconTrash size={14} />} styles={{ item: { color: 'red' } }}>
+              Delete
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
       </Group>
       <Stack gap={16} pt={16} pb={16} pl={8} pr={8}>
         {todos.map((todo) => {
@@ -81,21 +74,7 @@ export function TodoList({ todos, date }: { todos: Todo[]; date: string }) {
                       {todo.description}
                     </Text>
                   </Group>
-                  <Group gap={8}>
-                    {todo.hashtag.map((tag, index) => {
-                      return (
-                        <Badge key={index} size={'xs'} color={'gray.5'} variant={'outline'}>
-                          {tag}
-                        </Badge>
-                      );
-                    })}
-                  </Group>
                 </Stack>
-                {mode === 'edit' ? (
-                  <ActionIcon size={18} color={'red.4'}>
-                    <IconTrash />
-                  </ActionIcon>
-                ) : undefined}
               </Group>
             </label>
           );
