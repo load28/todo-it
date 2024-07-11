@@ -2,9 +2,8 @@
 
 import { dehydrate, HydrationBoundary, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTodos, Todo } from '@/api/todo';
-import { Stack } from '@mantine/core';
+import { Divider, Stack } from '@mantine/core';
 import { TodoList } from '@/app/@main/TodoList';
-import classes from '@/app/@main/TodoPage.module.css';
 import React, { useMemo } from 'react';
 import { sortDate } from '@/utils/date';
 
@@ -14,13 +13,6 @@ export function TodoPage() {
     queryKey: ['todos'],
     queryFn: getTodos,
   });
-  const fetchData = async () => {
-    await client.prefetchQuery({
-      queryKey: ['todos'],
-      queryFn: getTodos,
-    });
-    return dehydrate(client);
-  };
   const { todoMap, sortedDates } = useMemo(() => {
     const todoMap =
       todos?.reduce<Record<string, Todo[]>>((acc, todo) => {
@@ -33,6 +25,14 @@ export function TodoPage() {
     const sortedDates = sortDate(dates, 'des');
     return { todoMap, sortedDates };
   }, [todos]);
+
+  const fetchData = async () => {
+    await client.prefetchQuery({
+      queryKey: ['todos'],
+      queryFn: getTodos,
+    });
+    return dehydrate(client);
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -49,7 +49,7 @@ export function TodoPage() {
           return (
             <Stack key={date} gap={18}>
               <TodoList key={date} todos={todoMap[date]} date={date} />
-              <div className={classes.todoDivider} />
+              <Divider />
             </Stack>
           );
         })}

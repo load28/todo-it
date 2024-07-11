@@ -1,7 +1,3 @@
 .todoMain {
   padding: var(--mantine-spacing-md) 0;
 }
-
-.todoDivider {
-  border-bottom: rem(1px) solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-3));
-}
