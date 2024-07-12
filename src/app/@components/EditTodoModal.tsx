@@ -1,25 +1,17 @@
+'use client';
+
 import { Button, Modal, Stack } from '@mantine/core';
 import { SaveTodo } from '@/app/@components/save-todo/SaveTodo';
-import { PropsWithoutRef, useState } from 'react';
+import { PropsWithoutRef } from 'react';
 
-export function EditTodoModal({
-  opened,
-  open,
-  close,
-  date,
-  todos,
-}: PropsWithoutRef<{ opened: boolean; open: () => void; close: () => void; date: Date; todos: string[] }>) {
-  const [value, setValue] = useState(date);
-  const [editTodos, setTodos] = useState<string[]>([...todos]);
-
+export function EditTodoModal({ opened, close }: PropsWithoutRef<{ opened: boolean; close: () => void }>) {
   return (
     <Modal
       opened={opened}
       onClose={() => {
         close();
-        setTodos(Array.from({ length: 4 }, () => ''));
       }}
-      title="Create todo it"
+      title="Edit todo"
       styles={{
         title: {
           fontWeight: 700,
@@ -28,11 +20,11 @@ export function EditTodoModal({
     >
       <Stack pt={'md'} pb={'md'} pl={'sm'} pr={'sm'} gap={'xl'}>
         <Stack gap={'xl'}>
-          <SaveTodo.Date value={value} setDate={setValue} />
-          <SaveTodo.Todos todos={editTodos} setTodos={setTodos} />
+          <SaveTodo.Date />
+          <SaveTodo.Todos />
         </Stack>
         <Button mt={'md'} color="blue.5">
-          Add
+          Edit
         </Button>
       </Stack>
     </Modal>

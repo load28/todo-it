@@ -1,19 +1,18 @@
 'use client';
 
-import { ActionIcon, Group, Stack, Text } from '@mantine/core';
-import { IconList, IconSquareRoundedPlus } from '@tabler/icons-react';
+import { Group, Stack, Text } from '@mantine/core';
+import { IconList } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import classes from './Navbar.module.css';
 import { useMemo } from 'react';
-import { useDisclosure } from '@mantine/hooks';
-import { CreateTodoModal } from '@/app/@components/CreateTodoModal';
+import { NavbarAddButton } from '@/app/@layout/NavbarAddButton';
 
 const data = [{ link: '/', label: 'Todo', icon: IconList }];
 
 export function Navbar() {
   const currentPath = usePathname();
-  const [opened, { open, close }] = useDisclosure(false);
+
   const links = useMemo(() => {
     return data.map((item) => (
       <Link key={item.link} className={classes.link} data-active={item.link === currentPath || undefined} href={item.link}>
@@ -25,16 +24,13 @@ export function Navbar() {
 
   return (
     <nav className={classes.navbar}>
-      <CreateTodoModal opened={opened} open={open} close={close} />
       <Stack flex={'1'} gap={64} justify={'space-between'}>
         <Stack>
           <Group className={classes.header} justify="space-between">
             <Text size="lg" fw={700} c="gray.8">
               Todo it
             </Text>
-            <ActionIcon size={'sm'} variant={'subtle'} color={'gray.6'} onClick={open}>
-              <IconSquareRoundedPlus />
-            </ActionIcon>
+            <NavbarAddButton />
           </Group>
           {links}
         </Stack>

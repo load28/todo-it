@@ -10,16 +10,21 @@ export function TodoList({ todos, date }: { todos: Todo[]; date: string }) {
   const todoMutation = useMutation({
     mutationKey: ['todos'],
     mutationFn: async (id: string) => {
-      const allTodos = queryClient.getQueryData<Todo[]>(['todos']) || [];
-      return allTodos.map((todo) => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            isComplete: !todo.isComplete,
-          };
-        }
-        return todo;
-      });
+      const allTodos = queryClient.getQueryData<Record<string, Todo[]>>(['todos']) || {};
+      return {
+        ...allTodos,
+        [date]: [
+          ...allTodos[date].map((todo) => {
+            if (todo.id === id) {
+              return {
+                ...todo,
+                isComplete: !todo.isComplete,
+              };
+            }
+            return todo;
+          }),
+        ],
+      };
     },
     onSuccess: (todos) => {
       queryClient.setQueryData(['todos'], todos);
