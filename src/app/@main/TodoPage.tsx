@@ -5,7 +5,7 @@ import { getTodos } from '@/api/todo';
 import { Divider, Stack } from '@mantine/core';
 import { TodoList } from '@/app/@main/TodoList';
 import React, { useMemo } from 'react';
-import { sortDate } from '@/core/utils/date';
+import { sortDate } from '@/core/date';
 
 export function TodoPage() {
   const client = useQueryClient();

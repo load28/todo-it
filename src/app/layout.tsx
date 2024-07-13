@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.scss';
 import { QueryProviders } from './query-provider';
+import { TzProvider } from '@/app/@core/Timezone.context';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,14 +28,16 @@ export default function RootLayout({
       <body className={inter.className}>
         <MantineProvider theme={theme}>
           <QueryProviders>
-            <div className="layout">
-              <Navbar />
-              <main className="layoutMain">
-                <Stack pl={24} pr={24}>
-                  {children}
-                </Stack>
-              </main>
-            </div>
+            <TzProvider value={{ tz: 'Asia/Seoul' }}>
+              <div className="layout">
+                <Navbar />
+                <main className="layoutMain">
+                  <Stack pl={24} pr={24}>
+                    {children}
+                  </Stack>
+                </main>
+              </div>
+            </TzProvider>
           </QueryProviders>
         </MantineProvider>
       </body>

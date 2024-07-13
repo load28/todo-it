@@ -6,20 +6,20 @@ import { CreateTodoModal } from '@/app/@components/CreateTodoModal';
 import { EditTodoModal } from '@/app/@components/EditTodoModal';
 import { SaveTodoWrapperProvider } from '@/app/@components/save-todo/SaveTodoWrapper.context';
 import { getTodos } from '@/api/todo';
-import { utcDayjs } from '@/core/utils/date';
+import dayjs from 'dayjs';
 
-export function SaveTodoModal({ opened, close }: PropsWithRef<{ opened: boolean; close: () => void }>) {
+export function SaveTodoModal({ opened, close, date }: PropsWithRef<{ opened: boolean; close: () => void; date: string }>) {
   const { data: todoMap } = useQuery({ queryKey: ['todos'], queryFn: getTodos });
-  const [date, setDate] = useState<Date | null>(new Date());
+  const [cachedDate, setCachedDate] = useState<Date | null>(dayjs(date).utc().toDate());
   const [todos, setTodos] = useState<string[]>(Array.from({ length: 4 }, () => ''));
   const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
-    if (!todoMap || !date) {
+    if (!todoMap || !cachedDate) {
       return;
     }
 
-    const utcDate = utcDayjs(date.toDateString()).utc().format('YYYY-MM-DD');
+    const utcDate = cachedDate.toISOString();
     const todos = todoMap[utcDate];
     if (!todos) {
       setIsEdit(false);
@@ -28,10 +28,10 @@ export function SaveTodoModal({ opened, close }: PropsWithRef<{ opened: boolean;
       setIsEdit(true);
       setTodos(todos.map((todo) => todo.description));
     }
-  }, [date, todoMap]);
+  }, [cachedDate, todoMap]);
 
   return (
-    <SaveTodoWrapperProvider value={{ date, todos, setTodos, setDate }}>
+    <SaveTodoWrapperProvider value={{ date: cachedDate, todos, setTodos, setDate: setCachedDate }}>
       {isEdit ? <EditTodoModal opened={opened} close={close} /> : <CreateTodoModal opened={opened} close={close} />}
     </SaveTodoWrapperProvider>
   );

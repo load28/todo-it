@@ -1,11 +1,19 @@
+'use client';
+
 import { Todo } from '@/api/todo';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { ChangeEvent } from 'react';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import classes from '@/app/@main/TodoList.module.css';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
+import { SaveTodoModal } from '@/app/@components/SaveTodoModal';
+import { useDisclosure } from '@mantine/hooks';
+import dayjs from 'dayjs';
+import { useTzContext } from '@/app/@core/Timezone.context';
 
 export function TodoList({ todos, date }: { todos: Todo[]; date: string }) {
+  const tzCtx = useTzContext();
+  const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient();
   const todoMutation = useMutation({
     mutationKey: ['todos'],
@@ -36,14 +44,15 @@ export function TodoList({ todos, date }: { todos: Todo[]; date: string }) {
   };
 
   const editHandler = () => {
-    // open modal
+    open();
   };
 
   return (
     <div>
+      {opened && <SaveTodoModal close={close} opened={opened} date={date} />}
       <Group className={classes.todoSettingMenu} justify={'space-between'}>
         <Text size="md" fw={700} c="gray.8">
-          {date}
+          {dayjs(date).tz(tzCtx?.tz).format('YYYY-MM-DD')}
         </Text>
         <Menu width={180} styles={{ itemLabel: { fontSize: '12px' } }} position={'bottom-end'}>
           <Menu.Target>

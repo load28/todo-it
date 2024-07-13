@@ -1,4 +1,4 @@
-import { utcDayjs } from '@/core/utils/date';
+import { utcDayjs } from '@/core/date';
 
 export interface Todo {
   id: string;
@@ -12,31 +12,31 @@ export const TODOS: Todo[] = [
     id: '1',
     description:
       'Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1zzzz',
-    date: utcDayjs('2022-01-01').utc().format('YYYY-MM-DD'),
+    date: utcDayjs('2022-01-01').utc().toISOString(),
     isComplete: true,
   },
   {
     id: '2',
     description: 'Description 2',
-    date: utcDayjs('2022-01-01').utc().format('YYYY-MM-DD'),
+    date: utcDayjs('2022-01-01').utc().toISOString(),
     isComplete: false,
   },
   {
     id: '3',
     description: 'Description 3',
-    date: utcDayjs('2022-01-01').utc().format('YYYY-MM-DD'),
+    date: utcDayjs('2022-01-01').utc().toISOString(),
     isComplete: false,
   },
   {
     id: '4',
     description: 'Description 4',
-    date: utcDayjs('2022-01-01').utc().format('YYYY-MM-DD'),
+    date: utcDayjs('2022-01-01').utc().toISOString(),
     isComplete: false,
   },
   {
     id: '5',
     description: 'Description 4',
-    date: utcDayjs('2024-07-12').utc().format('YYYY-MM-DD'),
+    date: utcDayjs('2024-07-13').utc().toISOString(),
     isComplete: false,
   },
 ];

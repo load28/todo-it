@@ -10,7 +10,7 @@ export function NavbarAddButton() {
 
   return (
     <>
-      {opened && <SaveTodoModal close={close} opened={opened} />}
+      {opened && <SaveTodoModal close={close} opened={opened} date={new Date().toDateString()} />}
       <ActionIcon size={'sm'} variant={'subtle'} color={'gray.6'} onClick={open}>
         <IconSquareRoundedPlus />
       </ActionIcon>
