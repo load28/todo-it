@@ -6,12 +6,14 @@ import { Divider, Stack } from '@mantine/core';
 import { TodoList } from '@/app/@main/TodoList';
 import React, { useMemo } from 'react';
 import { sortDate } from '@/core/date';
+import { useTzContext } from '@/app/@core/Timezone.context';
 
 export function TodoPage() {
+  const tzCtx = useTzContext();
   const client = useQueryClient();
   const { data: todoMap, isLoading } = useQuery({
     queryKey: ['todos'],
-    queryFn: getTodos,
+    queryFn: getTodos(tzCtx?.tz),
   });
   const { sortedDates } = useMemo(() => {
     const dates = Object.keys(todoMap || {});
@@ -22,7 +24,7 @@ export function TodoPage() {
   const fetchData = async () => {
     await client.prefetchQuery({
       queryKey: ['todos'],
-      queryFn: getTodos,
+      queryFn: getTodos(tzCtx?.tz),
     });
     return dehydrate(client);
   };

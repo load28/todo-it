@@ -1,5 +1,5 @@
-import { Stack } from '@mantine/core';
+import { SettingsPage } from '@/app/settings/SettingsPage';
 
-export default function SettingPage() {
-  return <Stack>Settings</Stack>
+export default function Page() {
+  return <SettingsPage />;
 }

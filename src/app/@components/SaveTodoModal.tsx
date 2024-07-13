@@ -7,10 +7,12 @@ import { EditTodoModal } from '@/app/@components/EditTodoModal';
 import { SaveTodoWrapperProvider } from '@/app/@components/save-todo/SaveTodoWrapper.context';
 import { getTodos } from '@/api/todo';
 import dayjs from 'dayjs';
+import { useTzContext } from '@/app/@core/Timezone.context';
 
 export function SaveTodoModal({ opened, close, date }: PropsWithRef<{ opened: boolean; close: () => void; date: string }>) {
-  const { data: todoMap } = useQuery({ queryKey: ['todos'], queryFn: getTodos });
-  const [cachedDate, setCachedDate] = useState<Date | null>(dayjs(date).utc().toDate());
+  const tzCtx = useTzContext();
+  const { data: todoMap } = useQuery({ queryKey: ['todos'], queryFn: getTodos(tzCtx?.tz) });
+  const [cachedDate, setCachedDate] = useState<Date | null>(dayjs(date).toDate());
   const [todos, setTodos] = useState<string[]>(Array.from({ length: 4 }, () => ''));
   const [isEdit, setIsEdit] = useState(false);
 
@@ -19,8 +21,9 @@ export function SaveTodoModal({ opened, close, date }: PropsWithRef<{ opened: bo
       return;
     }
 
-    const utcDate = cachedDate.toISOString();
+    const utcDate = dayjs(cachedDate).format('YYYY-MM-DD');
     const todos = todoMap[utcDate];
+
     if (!todos) {
       setIsEdit(false);
       setTodos(Array.from({ length: 4 }, () => ''));
