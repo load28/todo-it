@@ -1,15 +1,15 @@
 'use client';
 
-import { PropsWithRef, useEffect, useState } from 'react';
+import { PropsWithoutRef, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { CreateTodoModal } from '@/app/@components/CreateTodoModal';
 import { EditTodoModal } from '@/app/@components/EditTodoModal';
-import { SaveTodoWrapperProvider } from '@/app/@components/save-todo/SaveTodoWrapper.context';
+import { SaveTodoDataProvider } from '@/app/@components/save-todo/SaveTodoData.context';
 import { getTodos } from '@/api/todo';
 import dayjs from 'dayjs';
 import { useTzContext } from '@/app/@core/Timezone.context';
 
-export function SaveTodoModal({ opened, close, date }: PropsWithRef<{ opened: boolean; close: () => void; date: string }>) {
+export function SaveTodoModal({ date }: PropsWithoutRef<{ date: string }>) {
   const tzCtx = useTzContext();
   const { data: todoMap } = useQuery({ queryKey: ['todos'], queryFn: getTodos(tzCtx?.tz) });
   const [cachedDate, setCachedDate] = useState<Date | null>(dayjs(date).toDate());
@@ -21,8 +21,7 @@ export function SaveTodoModal({ opened, close, date }: PropsWithRef<{ opened: bo
       return;
     }
 
-    const utcDate = dayjs(cachedDate).format('YYYY-MM-DD');
-    const todos = todoMap[utcDate];
+    const todos = todoMap[dayjs(cachedDate).format('YYYY-MM-DD')];
 
     if (!todos) {
       setIsEdit(false);
@@ -34,8 +33,8 @@ export function SaveTodoModal({ opened, close, date }: PropsWithRef<{ opened: bo
   }, [cachedDate, todoMap]);
 
   return (
-    <SaveTodoWrapperProvider value={{ date: cachedDate, todos, setTodos, setDate: setCachedDate }}>
-      {isEdit ? <EditTodoModal opened={opened} close={close} /> : <CreateTodoModal opened={opened} close={close} />}
-    </SaveTodoWrapperProvider>
+    <SaveTodoDataProvider value={{ date: cachedDate, todos, setTodos, setDate: setCachedDate }}>
+      {isEdit ? <EditTodoModal /> : <CreateTodoModal />}
+    </SaveTodoDataProvider>
   );
 }

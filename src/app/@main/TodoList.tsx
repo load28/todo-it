@@ -7,11 +7,10 @@ import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import classes from '@/app/@main/TodoList.module.css';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
 import { SaveTodoModal } from '@/app/@components/SaveTodoModal';
+import { ModalControlProvider } from '@/app/@core/ModalControl.context';
 import { useDisclosure } from '@mantine/hooks';
-import { useTzContext } from '@/app/@core/Timezone.context';
 
 export function TodoList({ todos, date }: { todos: Todo[]; date: string }) {
-  const tzCtx = useTzContext();
   const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient();
   const todoMutation = useMutation({
@@ -48,7 +47,11 @@ export function TodoList({ todos, date }: { todos: Todo[]; date: string }) {
 
   return (
     <div>
-      {opened && <SaveTodoModal close={close} opened={opened} date={date} />}
+      {opened && (
+        <ModalControlProvider value={{ opened, close, open }}>
+          <SaveTodoModal date={date} />
+        </ModalControlProvider>
+      )}
       <Group className={classes.todoSettingMenu} justify={'space-between'}>
         <Text size="md" fw={700} c="gray.8">
           {date}

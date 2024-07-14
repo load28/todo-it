@@ -2,11 +2,11 @@ import { ActionIcon, Group, Input, Stack, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { ChangeEvent } from 'react';
 import { IconSquareRoundedPlus, IconSquareRoundedX } from '@tabler/icons-react';
-import { useSaveTodoWrapperContext } from '@/app/@components/save-todo/SaveTodoWrapper.context';
+import { useSaveTodoDataContext } from '@/app/@components/save-todo/SaveTodoData.context';
 
 export const SaveTodo = {
   Date: () => {
-    const ctx = useSaveTodoWrapperContext();
+    const ctx = useSaveTodoDataContext();
 
     return (
       <DatePickerInput
@@ -23,7 +23,7 @@ export const SaveTodo = {
     );
   },
   Todos: () => {
-    const ctx = useSaveTodoWrapperContext();
+    const ctx = useSaveTodoDataContext();
 
     return (
       <Stack gap={'sm'}>

@@ -2,14 +2,16 @@
 
 import { Button, Modal, Stack } from '@mantine/core';
 import { SaveTodo } from '@/app/@components/save-todo/SaveTodo';
-import { PropsWithoutRef } from 'react';
+import { useModalControlContext } from '@/app/@core/ModalControl.context';
 
-export const CreateTodoModal = ({ opened, close }: PropsWithoutRef<{ opened: boolean; close: () => void }>) => {
+export const CreateTodoModal = () => {
+  const modalCtx = useModalControlContext();
+
   return (
     <Modal
-      opened={opened}
+      opened={modalCtx?.opened || false}
       onClose={() => {
-        close();
+        modalCtx?.close();
       }}
       title="Create todo"
       styles={{

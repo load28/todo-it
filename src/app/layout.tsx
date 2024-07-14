@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 async function getTimezone() {
   // timezone 을 변경하는 로직은 기존 fetch를 무효화 하여 새로고침을 유도하는 로직이 필요합니다.
   // 테스트 하려면 api를 통해서 테스트가 필요함
-  return Promise.resolve('America/New_York');
+  return Promise.resolve('Asia/Seoul');
 }
 
 export default async function RootLayout({ children }: PropsWithChildren) {
