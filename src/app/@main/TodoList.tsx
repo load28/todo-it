@@ -1,6 +1,6 @@
 'use client';
 
-import { Todo } from '@/api/todo';
+import { Todo } from '@/app/api/todo';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { ChangeEvent } from 'react';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';

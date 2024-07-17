@@ -1,14 +1,18 @@
 'use client';
 
 import { Group, Stack, Text } from '@mantine/core';
-import { IconList, IconSettings } from '@tabler/icons-react';
+import { IconList, IconLogin, IconSettings } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import classes from './Navbar.module.css';
 import { useMemo } from 'react';
 import { NavbarAddButton } from '@/app/@layout/NavbarAddButton';
 
-const data = [{ link: '/', label: 'Todo', icon: IconList }, {link: '/settings', label: 'Settings', icon: IconSettings}];
+const data = [
+  { link: '/', label: 'Todo', icon: IconList },
+  { link: '/settings', label: 'Settings', icon: IconSettings },
+  { link: '/login', label: 'Login', icon: IconLogin },
+];
 
 export function Navbar() {
   const currentPath = usePathname();
@@ -24,6 +28,7 @@ export function Navbar() {
 
   return (
     <nav className={classes.navbar}>
+      {/*{session && session.data?.user?.name}*/}
       <Stack flex={'1'} gap={64} justify={'space-between'}>
         <Stack gap={0}>
           <Group className={classes.header} justify="space-between">
@@ -32,9 +37,7 @@ export function Navbar() {
             </Text>
             <NavbarAddButton />
           </Group>
-          <Stack gap={'xs'}>
-            {links}
-          </Stack>
+          <Stack gap={'xs'}>{links}</Stack>
         </Stack>
       </Stack>
     </nav>

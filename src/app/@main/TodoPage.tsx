@@ -1,7 +1,7 @@
 'use client';
 
 import { dehydrate, HydrationBoundary, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getTodos } from '@/api/todo';
+import { getTodos } from '@/app/api/todo';
 import { Divider, Stack } from '@mantine/core';
 import { TodoList } from '@/app/@main/TodoList';
 import React, { useMemo } from 'react';

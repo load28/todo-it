@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { CreateTodoModal } from '@/app/@components/CreateTodoModal';
 import { EditTodoModal } from '@/app/@components/EditTodoModal';
 import { SaveTodoDataProvider } from '@/app/@components/save-todo/SaveTodoData.context';
-import { getTodos } from '@/api/todo';
+import { getTodos } from '@/app/api/todo';
 import dayjs from 'dayjs';
 import { useTzContext } from '@/app/@core/Timezone.context';
 
