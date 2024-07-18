@@ -11,8 +11,8 @@ export default function LoginPage() {
   };
 
   return (
-    <Group justify={'center'} align={'center'} mt={'auto'} mb={'auto'}>
-      <Button onClick={singInHandler}>Google login</Button>
+    <Group justify={ 'center' } align={ 'center' } mt={ 'auto' } mb={ 'auto' }>
+      <Button onClick={ singInHandler }>Google login</Button>
     </Group>
   );
 }

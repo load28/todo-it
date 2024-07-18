@@ -1,17 +1,17 @@
 'use client';
 
+import { NavbarAddButton } from '@/app/@layout/NavbarAddButton';
 import { Group, Stack, Text } from '@mantine/core';
 import { IconList, IconLogin, IconSettings } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import classes from './Navbar.module.css';
 import { useMemo } from 'react';
-import { NavbarAddButton } from '@/app/@layout/NavbarAddButton';
+import classes from './Navbar.module.css';
 
 const data = [
   { link: '/', label: 'Todo', icon: IconList },
   { link: '/settings', label: 'Settings', icon: IconSettings },
-  { link: '/login', label: 'Login', icon: IconLogin },
+  { link: '/login', label: 'Login', icon: IconLogin }
 ];
 
 export function Navbar() {
@@ -19,25 +19,25 @@ export function Navbar() {
 
   const links = useMemo(() => {
     return data.map((item) => (
-      <Link key={item.link} className={classes.link} data-active={item.link === currentPath || undefined} href={item.link}>
-        <item.icon className={classes.linkIcon} stroke={2.0} />
-        <span>{item.label}</span>
+      <Link key={ item.link } className={ classes.link } data-active={ item.link === currentPath || undefined }
+            href={ item.link }>
+        <item.icon className={ classes.linkIcon } stroke={ 2.0 } />
+        <span>{ item.label }</span>
       </Link>
     ));
-  }, [data, currentPath]);
+  }, [ data, currentPath ]);
 
   return (
-    <nav className={classes.navbar}>
-      {/*{session && session.data?.user?.name}*/}
-      <Stack flex={'1'} gap={64} justify={'space-between'}>
-        <Stack gap={0}>
-          <Group className={classes.header} justify="space-between">
-            <Text size="lg" fw={700} c="gray.8">
+    <nav className={ classes.navbar }>
+      <Stack flex={ '1' } gap={ 64 } justify={ 'space-between' }>
+        <Stack gap={ 0 }>
+          <Group className={ classes.header } justify="space-between">
+            <Text size="lg" fw={ 700 } c="gray.8">
               Todo it
             </Text>
             <NavbarAddButton />
           </Group>
-          <Stack gap={'xs'}>{links}</Stack>
+          <Stack gap={ 'xs' }>{ links }</Stack>
         </Stack>
       </Stack>
     </nav>
