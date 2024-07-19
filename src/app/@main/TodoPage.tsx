@@ -1,30 +1,30 @@
 'use client';
 
-import { dehydrate, HydrationBoundary, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getTodos } from '@/app/api/todo';
-import { Divider, Stack } from '@mantine/core';
+import { useTzContext } from '@/app/@core/providers/Timezone.context';
 import { TodoList } from '@/app/@main/TodoList';
-import React, { useMemo } from 'react';
+import { getTodos } from '@/app/api/todo';
 import { sortDate } from '@/core/date';
-import { useTzContext } from '@/app/@core/Timezone.context';
+import { Divider, Stack } from '@mantine/core';
+import { dehydrate, HydrationBoundary, useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useMemo } from 'react';
 
 export function TodoPage() {
   const tzCtx = useTzContext();
   const client = useQueryClient();
   const { data: todoMap, isLoading } = useQuery({
-    queryKey: ['todos'],
-    queryFn: getTodos(tzCtx?.tz),
+    queryKey: [ 'todos' ],
+    queryFn: getTodos(tzCtx?.tz)
   });
   const { sortedDates } = useMemo(() => {
     const dates = Object.keys(todoMap || {});
     const sortedDates = sortDate(dates, 'des');
     return { sortedDates };
-  }, [todoMap]);
+  }, [ todoMap ]);
 
   const fetchData = async () => {
     await client.prefetchQuery({
-      queryKey: ['todos'],
-      queryFn: getTodos(tzCtx?.tz),
+      queryKey: [ 'todos' ],
+      queryFn: getTodos(tzCtx?.tz)
     });
     return dehydrate(client);
   };
@@ -38,17 +38,17 @@ export function TodoPage() {
   }
 
   return (
-    <HydrationBoundary state={fetchData}>
-      <Stack gap={32}>
-        {todoMap &&
+    <HydrationBoundary state={ fetchData }>
+      <Stack gap={ 32 }>
+        { todoMap &&
           sortedDates.map((date) => {
             return (
-              <Stack key={date} gap={18}>
-                <TodoList key={date} todos={todoMap[date]} date={date} />
+              <Stack key={ date } gap={ 18 }>
+                <TodoList key={ date } todos={ todoMap[date] } date={ date } />
                 <Divider />
               </Stack>
             );
-          })}
+          }) }
       </Stack>
     </HydrationBoundary>
   );

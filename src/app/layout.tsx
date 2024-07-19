@@ -1,4 +1,4 @@
-import { Providers } from '@/app/@core/Providers';
+import { Providers } from '@/app/@core/providers/Providers';
 import { Navbar } from '@/app/@layout/Navbar';
 import { ColorSchemeScript, Stack } from '@mantine/core';
 import '@mantine/core/styles.css';

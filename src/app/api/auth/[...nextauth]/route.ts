@@ -1,4 +1,4 @@
-import { firestore } from '@/app/@core/firebase';
+import { firestore } from '@/app/@core/config/firebase';
 import { FirestoreAdapter } from '@next-auth/firebase-adapter';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
