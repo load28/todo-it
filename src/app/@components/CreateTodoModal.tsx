@@ -9,23 +9,23 @@ export const CreateTodoModal = () => {
 
   return (
     <Modal
-      opened={ modalCtx?.opened || false }
-      onClose={ () => {
+      opened={modalCtx?.opened || false}
+      onClose={() => {
         modalCtx?.close();
-      } }
+      }}
       title="Create todo"
-      styles={ {
+      styles={{
         title: {
-          fontWeight: 700
-        }
-      } }
+          fontWeight: 700,
+        },
+      }}
     >
-      <Stack pt={ 'md' } pb={ 'md' } pl={ 'sm' } pr={ 'sm' } gap={ 'xl' }>
-        <Stack gap={ 'xl' }>
+      <Stack pt={'md'} pb={'md'} pl={'sm'} pr={'sm'} gap={'xl'}>
+        <Stack gap={'xl'}>
           <SaveTodo.Date />
           <SaveTodo.Todos />
         </Stack>
-        <Button mt={ 'md' } color="blue.5">
+        <Button mt={'md'} color="blue.5">
           Add
         </Button>
       </Stack>

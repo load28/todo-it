@@ -11,10 +11,10 @@ import { PropsWithoutRef, useEffect, useState } from 'react';
 
 export function SaveTodoModal({ date }: PropsWithoutRef<{ date: string }>) {
   const tzCtx = useTzContext();
-  const { data: todoMap } = useQuery({ queryKey: [ 'todos' ], queryFn: getTodos(tzCtx?.tz) });
-  const [ cachedDate, setCachedDate ] = useState<Date | null>(dayjs(date).toDate());
-  const [ todos, setTodos ] = useState<string[]>(Array.from({ length: 4 }, () => ''));
-  const [ isEdit, setIsEdit ] = useState(false);
+  const { data: todoMap } = useQuery({ queryKey: ['todos'], queryFn: getTodos(tzCtx?.tz) });
+  const [cachedDate, setCachedDate] = useState<Date | null>(dayjs(date).toDate());
+  const [todos, setTodos] = useState<string[]>(Array.from({ length: 4 }, () => ''));
+  const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
     if (!todoMap || !cachedDate) {
@@ -30,11 +30,11 @@ export function SaveTodoModal({ date }: PropsWithoutRef<{ date: string }>) {
       setIsEdit(true);
       setTodos(todos.map((todo) => todo.description));
     }
-  }, [ cachedDate, todoMap ]);
+  }, [cachedDate, todoMap]);
 
   return (
-    <SaveTodoDataProvider value={ { date: cachedDate, todos, setTodos, setDate: setCachedDate } }>
-      { isEdit ? <EditTodoModal /> : <CreateTodoModal /> }
+    <SaveTodoDataProvider value={{ date: cachedDate, todos, setTodos, setDate: setCachedDate }}>
+      {isEdit ? <EditTodoModal /> : <CreateTodoModal />}
     </SaveTodoDataProvider>
   );
 }

@@ -7,16 +7,16 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconSquareRoundedPlus } from '@tabler/icons-react';
 
 export function NavbarAddButton() {
-  const [ opened, { open, close } ] = useDisclosure(false);
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <>
-      { opened && (
-        <ModalControlProvider value={ { opened, close, open } }>
-          <SaveTodoModal date={ new Date().toISOString() } />
+      {opened && (
+        <ModalControlProvider value={{ opened, close, open }}>
+          <SaveTodoModal date={new Date().toISOString()} />
         </ModalControlProvider>
-      ) }
-      <ActionIcon size={ 'sm' } variant={ 'subtle' } color={ 'gray.6' } onClick={ open }>
+      )}
+      <ActionIcon size={'sm'} variant={'subtle'} color={'gray.6'} onClick={open}>
         <IconSquareRoundedPlus />
       </ActionIcon>
     </>

@@ -12,19 +12,19 @@ export function TodoPage() {
   const tzCtx = useTzContext();
   const client = useQueryClient();
   const { data: todoMap, isLoading } = useQuery({
-    queryKey: [ 'todos' ],
-    queryFn: getTodos(tzCtx?.tz)
+    queryKey: ['todos'],
+    queryFn: getTodos(tzCtx?.tz),
   });
   const { sortedDates } = useMemo(() => {
     const dates = Object.keys(todoMap || {});
     const sortedDates = sortDate(dates, 'des');
     return { sortedDates };
-  }, [ todoMap ]);
+  }, [todoMap]);
 
   const fetchData = async () => {
     await client.prefetchQuery({
-      queryKey: [ 'todos' ],
-      queryFn: getTodos(tzCtx?.tz)
+      queryKey: ['todos'],
+      queryFn: getTodos(tzCtx?.tz),
     });
     return dehydrate(client);
   };
@@ -38,17 +38,17 @@ export function TodoPage() {
   }
 
   return (
-    <HydrationBoundary state={ fetchData }>
-      <Stack gap={ 32 }>
-        { todoMap &&
+    <HydrationBoundary state={fetchData}>
+      <Stack gap={32}>
+        {todoMap &&
           sortedDates.map((date) => {
             return (
-              <Stack key={ date } gap={ 18 }>
-                <TodoList key={ date } todos={ todoMap[date] } date={ date } />
+              <Stack key={date} gap={18}>
+                <TodoList key={date} todos={todoMap[date]} date={date} />
                 <Divider />
               </Stack>
             );
-          }) }
+          })}
       </Stack>
     </HydrationBoundary>
   );

@@ -19,8 +19,8 @@ export async function Providers({ children }: PropsWithChildren) {
   return (
     <AuthProvider>
       <QueryProviders>
-        <MantineProvider theme={ theme }>
-          <TzProvider value={ { tz } }>{ children }</TzProvider>
+        <MantineProvider theme={theme}>
+          <TzProvider value={{ tz }}>{children}</TzProvider>
         </MantineProvider>
       </QueryProviders>
     </AuthProvider>
