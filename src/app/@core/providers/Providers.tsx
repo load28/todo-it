@@ -1,4 +1,5 @@
 import { AuthProvider } from '@/app/@core/providers/Auth.context';
+import { ClientSessionProvider } from '@/app/@core/providers/Session.context';
 import { TzProvider } from '@/app/@core/providers/Timezone.context';
 import { QueryProviders } from '@/app/query-provider';
 import { createTheme, MantineProvider } from '@mantine/core';
@@ -17,12 +18,14 @@ export async function Providers({ children }: PropsWithChildren) {
   const tz = await getTimezone();
 
   return (
-    <AuthProvider>
-      <QueryProviders>
-        <MantineProvider theme={theme}>
-          <TzProvider value={{ tz }}>{children}</TzProvider>
-        </MantineProvider>
-      </QueryProviders>
-    </AuthProvider>
+    <MantineProvider theme={ theme }>
+      <ClientSessionProvider>
+        <AuthProvider>
+          <QueryProviders>
+            <TzProvider value={ { tz } }>{ children }</TzProvider>
+          </QueryProviders>
+        </AuthProvider>
+      </ClientSessionProvider>
+    </MantineProvider>
   );
 }
