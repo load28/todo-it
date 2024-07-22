@@ -1,19 +1,18 @@
 'use client';
 
-import LoginPage from '@/app/login/LoginPage';
 import { useSession } from 'next-auth/react';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren } from 'react';
+import { Text } from '@mantine/core';
+import Login from '@/app/@login/page';
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const session = useSession();
-  const [ isLogin, setIsLogin ] = useState(false);
 
-  useEffect(() => {
-    const isLogin = !!(session && session.data && session.status === 'authenticated');
-    setIsLogin(isLogin);
-  }, [ session ]);
-
-  return <>
-    { isLogin ? children : <LoginPage /> }
-  </>;
+  return (
+    <>
+      {session?.status === 'loading' && <Text>Loading...</Text>}
+      {session?.status === 'unauthenticated' && <Login />}
+      {session?.status === 'authenticated' && children}
+    </>
+  );
 }

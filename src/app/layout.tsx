@@ -8,30 +8,30 @@ import { Inter } from 'next/font/google';
 import './globals.scss';
 import { PropsWithChildren } from 'react';
 
-const inter = Inter({ subsets: [ 'latin' ] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Todo App'
+  title: 'Todo App',
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
-    <head>
-      <ColorSchemeScript />
-    </head>
-    <body className={ inter.className }>
-    <Providers>
-      <div className="layout">
-        <Navbar />
-        <main className="layoutMain">
-          <Stack pl={ 24 } pr={ 24 } h={ '100%' }>
-            { children }
-          </Stack>
-        </main>
-      </div>
-    </Providers>
-    </body>
+      <head>
+        <ColorSchemeScript />
+      </head>
+      <body className={inter.className}>
+        <div className="layout">
+          <Providers>
+            <Navbar />
+            <main className="layoutMain">
+              <Stack pl={24} pr={24} h={'100%'}>
+                {children}
+              </Stack>
+            </main>
+          </Providers>
+        </div>
+      </body>
     </html>
   );
 }
