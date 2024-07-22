@@ -8,9 +8,9 @@ import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, PropsWithChildren } from 'react';
 
-export function TodoList({ todos, date }: { todos: Todo[]; date: string }) {
+export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; date: string }>) {
   const [ opened, { open, close } ] = useDisclosure(false);
   const queryClient = useQueryClient();
   const todoMutation = useMutation({
