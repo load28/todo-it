@@ -9,8 +9,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   return (
     <>
-      { session?.status === 'unauthenticated' && <Login /> }
-      { session?.status === 'authenticated' && children }
+      {session?.status === 'unauthenticated' && <Login />}
+      {session?.status === 'authenticated' && children}
     </>
   );
 }
