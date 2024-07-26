@@ -1,3 +1,4 @@
+import { ApolloClientProvider } from '@/app/@core/providers/Apollo.context';
 import { AuthProvider } from '@/app/@core/providers/Auth.context';
 import { ClientSessionProvider } from '@/app/@core/providers/Session.context';
 import { TzProvider } from '@/app/@core/providers/Timezone.context';
@@ -18,14 +19,16 @@ export async function Providers({ children }: PropsWithChildren) {
   const tz = await getTimezone();
 
   return (
-    <MantineProvider theme={ theme }>
-      <ClientSessionProvider>
-        <AuthProvider>
-          <QueryProviders>
-            <TzProvider value={ { tz } }>{ children }</TzProvider>
-          </QueryProviders>
-        </AuthProvider>
-      </ClientSessionProvider>
+    <MantineProvider theme={theme}>
+      <ApolloClientProvider>
+        <ClientSessionProvider>
+          <AuthProvider>
+            <QueryProviders>
+              <TzProvider value={{ tz }}>{children}</TzProvider>
+            </QueryProviders>
+          </AuthProvider>
+        </ClientSessionProvider>
+      </ApolloClientProvider>
     </MantineProvider>
   );
 }
