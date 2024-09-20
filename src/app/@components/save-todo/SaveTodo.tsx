@@ -22,7 +22,6 @@ export const SaveTodo = {
       />
     );
   },
-  // todo ui 요소만 가지고 있어야 하며 비즈니스 로직은 위에서 내려온 것을 기반으로 실행해야 한다
   Todos: () => {
     const ctx = useSaveTodoDataContext();
 
