@@ -25,6 +25,34 @@ export const SaveTodo = {
   Todos: () => {
     const ctx = useSaveTodoDataContext();
 
+    const changeHandler = (index: number, value: ChangeEvent<HTMLInputElement>) => {
+      if (!(value && ctx?.todos)) {
+        return;
+      }
+
+      const newTodos = [...ctx.todos];
+      newTodos[index] = `${value.target.value}`;
+      ctx.setTodos(newTodos);
+    };
+
+    const deleteHandler = (index: number) => {
+      if (!ctx?.todos) {
+        return;
+      }
+
+      if (ctx.todos.length === 1) {
+        return;
+      }
+
+      const newTodos = [...ctx.todos];
+      newTodos.splice(index, 1);
+      ctx.setTodos(newTodos);
+    };
+
+    const addHandler = () => {
+      ctx && ctx.setTodos([...ctx.todos, '']);
+    };
+
     return (
       <Stack gap={'sm'}>
         <Text size={'sm'} fw={'bold'}>
@@ -32,48 +60,18 @@ export const SaveTodo = {
         </Text>
         {ctx?.todos &&
           ctx.todos.map((todo, index) => {
-            const changeHandler = (value: ChangeEvent<HTMLInputElement>) => {
-              if (!value) {
-                return;
-              }
-
-              const newTodos = [...ctx.todos];
-              newTodos[index] = `${value.target.value}`;
-              ctx.setTodos(newTodos);
-            };
             return (
               <Group gap={'sm'} key={index}>
                 <Input.Wrapper flex={1}>
-                  <Input value={todo} onChange={changeHandler} data-autofocus={index === 0 || undefined} />
+                  <Input value={todo} onChange={(value) => changeHandler(index, value)} data-autofocus={index === 0 || undefined} />
                 </Input.Wrapper>
-                <ActionIcon
-                  size={'sm'}
-                  color={'red.5'}
-                  variant={'subtle'}
-                  onClick={() => {
-                    if (ctx.todos.length === 1) {
-                      return;
-                    }
-
-                    const newTodos = [...ctx.todos];
-                    newTodos.splice(index, 1);
-                    ctx.setTodos(newTodos);
-                  }}
-                >
+                <ActionIcon size={'sm'} color={'red.5'} variant={'subtle'} onClick={() => deleteHandler(index)}>
                   <IconSquareRoundedX />
                 </ActionIcon>
               </Group>
             );
           })}
-        <ActionIcon
-          variant={'subtle'}
-          ml={'auto'}
-          mr={'auto'}
-          color={'gray.5'}
-          onClick={() => {
-            ctx && ctx.setTodos([...ctx.todos, '']);
-          }}
-        >
+        <ActionIcon variant={'subtle'} ml={'auto'} mr={'auto'} color={'gray.5'} onClick={addHandler}>
           <IconSquareRoundedPlus />
         </ActionIcon>
       </Stack>
