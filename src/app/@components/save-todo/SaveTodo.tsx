@@ -2,12 +2,9 @@ import { ActionIcon, Group, Input, Stack, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { ChangeEvent } from 'react';
 import { IconSquareRoundedPlus, IconSquareRoundedX } from '@tabler/icons-react';
-import { useSaveTodoDataContext } from '@/app/@components/save-todo/SaveTodoData.context';
 
 export const SaveTodo = {
-  Date: () => {
-    const ctx = useSaveTodoDataContext();
-
+  Date: ({ date, setDate }: { date: Date | null; setDate: (date: Date | null) => void }) => {
     return (
       <DatePickerInput
         label={
@@ -17,40 +14,38 @@ export const SaveTodo = {
         }
         highlightToday={true}
         placeholder="Pick date"
-        value={ctx?.date}
-        onChange={ctx?.setDate}
+        value={date}
+        onChange={setDate}
       />
     );
   },
-  Todos: () => {
-    const ctx = useSaveTodoDataContext();
-
+  Todos: ({ todos, setTodos }: { todos: string[]; setTodos: (value: string[]) => void }) => {
     const changeHandler = (index: number, value: ChangeEvent<HTMLInputElement>) => {
-      if (!(value && ctx?.todos)) {
+      if (!value) {
         return;
       }
 
-      const newTodos = [...ctx.todos];
+      const newTodos = [...todos];
       newTodos[index] = `${value.target.value}`;
-      ctx.setTodos(newTodos);
+      setTodos(newTodos);
     };
 
     const deleteHandler = (index: number) => {
-      if (!ctx?.todos) {
+      if (!todos) {
         return;
       }
 
-      if (ctx.todos.length === 1) {
+      if (todos.length === 1) {
         return;
       }
 
-      const newTodos = [...ctx.todos];
+      const newTodos = [...todos];
       newTodos.splice(index, 1);
-      ctx.setTodos(newTodos);
+      setTodos(newTodos);
     };
 
     const addHandler = () => {
-      ctx && ctx.setTodos([...ctx.todos, '']);
+      setTodos([...todos, '']);
     };
 
     return (
@@ -58,19 +53,18 @@ export const SaveTodo = {
         <Text size={'sm'} fw={'bold'}>
           Todos
         </Text>
-        {ctx?.todos &&
-          ctx.todos.map((todo, index) => {
-            return (
-              <Group gap={'sm'} key={index}>
-                <Input.Wrapper flex={1}>
-                  <Input value={todo} onChange={(value) => changeHandler(index, value)} data-autofocus={index === 0 || undefined} />
-                </Input.Wrapper>
-                <ActionIcon size={'sm'} color={'red.5'} variant={'subtle'} onClick={() => deleteHandler(index)}>
-                  <IconSquareRoundedX />
-                </ActionIcon>
-              </Group>
-            );
-          })}
+        {todos.map((todo, index) => {
+          return (
+            <Group gap={'sm'} key={index}>
+              <Input.Wrapper flex={1}>
+                <Input value={todo} onChange={(value) => changeHandler(index, value)} data-autofocus={index === 0 || undefined} />
+              </Input.Wrapper>
+              <ActionIcon size={'sm'} color={'red.5'} variant={'subtle'} onClick={() => deleteHandler(index)}>
+                <IconSquareRoundedX />
+              </ActionIcon>
+            </Group>
+          );
+        })}
         <ActionIcon variant={'subtle'} ml={'auto'} mr={'auto'} color={'gray.5'} onClick={addHandler}>
           <IconSquareRoundedPlus />
         </ActionIcon>
