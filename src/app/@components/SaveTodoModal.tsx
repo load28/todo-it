@@ -13,7 +13,7 @@ export function SaveTodoModal({ date }: PropsWithoutRef<{ date: string }>) {
   const tzCtx = useTzContext();
   const [cachedDate, setCachedDate] = useState<Date | null>(dayjs(date).toDate());
   const { data: todoMap } = useQuery({ queryKey: ['todos'], queryFn: getTodos(tzCtx?.tz) });
-  const todos = useMemo(() => todoMap?.[dayjs(date).format('YYYY-MM-DD')]?.map((todo) => todo.description), [todoMap, date]);
+  const todos = useMemo(() => todoMap?.[dayjs(cachedDate).format('YYYY-MM-DD')]?.map((todo) => todo.description), [todoMap, cachedDate]);
 
   return (
     <>
