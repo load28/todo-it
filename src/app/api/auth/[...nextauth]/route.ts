@@ -49,14 +49,20 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt(res) {
+    async signIn(res) {
       const googleResponse = await fetch('http://localhost:8080/auth/google', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: res.token.sub }),
+        body: JSON.stringify({ token: res.account?.id_token }),
       });
-      const data = await googleResponse.json();
-      return data ? res.token : {};
+
+      if (googleResponse.status === 200) {
+        return true;
+      } else if (googleResponse.status === 401) {
+        return 'http://localhost:3000/signup';
+      } else {
+        return false;
+      }
     },
     async redirect(res) {
       const { url, baseUrl } = res;

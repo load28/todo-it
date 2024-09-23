@@ -1,5 +1,4 @@
 import { ApolloClientProvider } from '@/app/@core/providers/Apollo.context';
-import { AuthProvider } from '@/app/@core/providers/Auth.context';
 import { ClientSessionProvider } from '@/app/@core/providers/Session.context';
 import { TzProvider } from '@/app/@core/providers/Timezone.context';
 import { QueryProviders } from '@/app/query-provider';
@@ -22,11 +21,9 @@ export async function Providers({ children }: PropsWithChildren) {
     <MantineProvider theme={theme}>
       <ApolloClientProvider>
         <ClientSessionProvider>
-          <AuthProvider>
-            <QueryProviders>
-              <TzProvider value={{ tz }}>{children}</TzProvider>
-            </QueryProviders>
-          </AuthProvider>
+          <QueryProviders>
+            <TzProvider value={{ tz }}>{children}</TzProvider>
+          </QueryProviders>
         </ClientSessionProvider>
       </ApolloClientProvider>
     </MantineProvider>
