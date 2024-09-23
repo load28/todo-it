@@ -2,9 +2,9 @@
 
 import { Stack, Text } from '@mantine/core';
 import Script from 'next/script';
-import { signIn } from 'next-auth/react';
 import React from 'react';
 import { CredentialResponse } from 'google-one-tap';
+import { signIn } from 'next-auth/react';
 
 // TODO 구글 로그인 기능을 서버에서 별도로 구현 / 유저 정보도 디비로 별도 관리
 const handleCredentialResponse = async (response: CredentialResponse) => {
