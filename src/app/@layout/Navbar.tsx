@@ -3,11 +3,12 @@
 import { NavbarAddButton } from '@/app/@layout/NavbarAddButton';
 import { Avatar, Button, Divider, Group, Menu, Stack, Text, UnstyledButton } from '@mantine/core';
 import { IconList, IconLogin, IconLogout, IconSettings } from '@tabler/icons-react';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useMemo } from 'react';
 import classes from './Navbar.module.css';
+import { googleLogin, googleSignOut } from '@/app/auth-action';
 
 const data = [
   { link: '/main', label: 'Todo', icon: IconList },
@@ -19,11 +20,11 @@ export function Navbar() {
   const session = useSession();
 
   const singOutHandler = async () => {
-    await signOut();
+    await googleSignOut();
   };
 
   const signInHandler = async () => {
-    await signIn('google', { callbackUrl: '/login' });
+    await googleLogin();
   };
 
   const links = useMemo(() => {

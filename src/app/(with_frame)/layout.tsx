@@ -1,8 +1,16 @@
 import { PropsWithChildren } from 'react';
 import { Stack } from '@mantine/core';
 import { Navbar } from '@/app/@layout/Navbar';
+import { auth } from '@/app/auth';
+import { redirect } from 'next/navigation';
 
-export default function layout({ children }: PropsWithChildren) {
+export default async function layout({ children }: PropsWithChildren) {
+  const session = await auth();
+
+  if (!session) {
+    redirect('/login');
+  }
+
   return (
     <div className="layout">
       <Navbar />

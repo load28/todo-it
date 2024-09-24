@@ -1,33 +1,23 @@
 'use client';
 
 import { Stack, Text } from '@mantine/core';
-import Script from 'next/script';
 import React from 'react';
-import { CredentialResponse } from 'google-one-tap';
-import { signIn } from 'next-auth/react';
+import { googleLogin } from '@/app/auth-action';
+import Script from 'next/script';
 
-const handleCredentialResponse = async (response: CredentialResponse) => {
-  try {
-    await fetch('/api/auth/callback/google', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ credential: response.credential }),
-    });
-    await signIn('google', { callbackUrl: '/main' });
-  } catch (e: unknown) {
-    console.error(e);
-  }
+const login = async () => {
+  await googleLogin();
 };
 
 const initializeGoogleSignIn = () => {
   const targetElement = document.getElementById('google-signin-button');
-  const clientId = process.env.NEXT_PUBLIC_AUTH_GOOGLE_CLIENT_ID;
+  const clientId = process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID;
 
   if (!(targetElement && clientId)) {
     return;
   }
 
-  window.google.accounts.id.initialize({ client_id: clientId, callback: handleCredentialResponse });
+  window.google.accounts.id.initialize({ client_id: clientId, callback: login });
   window.google.accounts.id.renderButton(targetElement, { theme: 'outline', size: 'large' });
 };
 
