@@ -13,8 +13,7 @@ const handleCredentialResponse = async (response: CredentialResponse) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ credential: response.credential }),
     });
-
-    await signIn('google');
+    await signIn('google', { callbackUrl: '/main' });
   } catch (e: unknown) {
     console.error(e);
   }

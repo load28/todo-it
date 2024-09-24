@@ -1,46 +1,7 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  image: string;
-}
-
-interface Account {
-  provider: string;
-  type: string;
-  providerAccountId: string;
-  access_token: string;
-  expires_at: number;
-  scope: string;
-  token_type: string;
-  id_token: string;
-}
-
-interface Profile {
-  iss: string;
-  azp: string;
-  aud: string;
-  sub: string;
-  email: string;
-  email_verified: boolean;
-  at_hash: string;
-  name: string;
-  picture: string;
-  given_name: string;
-  family_name: string;
-  iat: number;
-  exp: number;
-}
-
-interface GoogleAuthResponse {
-  user: User;
-  account: Account;
-  profile: Profile;
-}
-
+// TODO 미들웨어를 통해 세션정보가 없을때, 로그인 페이지로 이동하는 로직을 구현해야함
 const handler = NextAuth({
   providers: [
     GoogleProvider({
@@ -58,8 +19,8 @@ const handler = NextAuth({
 
       if (googleResponse.status === 200) {
         return true;
-      } else if (googleResponse.status === 401) {
-        return 'http://localhost:3000/signup';
+      } else if (googleResponse.status === 404) {
+        return '/signup';
       } else {
         return false;
       }
