@@ -1,9 +1,5 @@
-import { Text } from '@mantine/core';
+import SignUp from '@/app/(no_frame)/signup/SignUp';
 
 export default function SignupPage() {
-  return (
-    <>
-      <Text size={'xl'}>Sign up</Text>
-    </>
-  );
+  return <SignUp />;
 }

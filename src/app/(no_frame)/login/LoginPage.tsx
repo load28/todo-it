@@ -6,7 +6,7 @@ import { googleLogin } from '@/app/auth-action';
 import Script from 'next/script';
 
 const login = async () => {
-  await googleLogin();
+  await googleLogin('/main');
 };
 
 const initializeGoogleSignIn = () => {

@@ -2,8 +2,8 @@
 
 import { signIn, signOut } from '@/app/auth';
 
-export async function googleLogin() {
-  return await signIn('google', { redirectTo: '/main' });
+export async function googleLogin(redirectTo: string) {
+  return await signIn('google', { redirectTo });
 }
 
 export async function googleSignOut() {
