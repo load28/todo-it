@@ -23,7 +23,7 @@ export function Navbar() {
   };
 
   const signInHandler = async () => {
-    await signIn('google');
+    await signIn('google', { callbackUrl: '/login' });
   };
 
   const links = useMemo(() => {
