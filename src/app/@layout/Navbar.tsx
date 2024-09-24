@@ -10,7 +10,7 @@ import React, { useMemo } from 'react';
 import classes from './Navbar.module.css';
 
 const data = [
-  { link: '/', label: 'Todo', icon: IconList },
+  { link: '/main', label: 'Todo', icon: IconList },
   { link: '/settings', label: 'Settings', icon: IconSettings },
 ];
 

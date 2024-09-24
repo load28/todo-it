@@ -1,7 +1,7 @@
 'use client';
 
 import { useTzContext } from '@/app/@core/providers/Timezone.context';
-import { TodoList } from '@/app/@main/TodoList';
+import { TodoList } from '@/app/(with_frame)/main/TodoList';
 import { getTodos } from '@/app/api/todo';
 import { sortDate } from '@/core/date';
 import { Divider, Stack } from '@mantine/core';

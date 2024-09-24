@@ -1,6 +1,5 @@
 import { Providers } from '@/app/@core/providers/Providers';
-import { Navbar } from '@/app/@layout/Navbar';
-import { ColorSchemeScript, Stack } from '@mantine/core';
+import { ColorSchemeScript } from '@mantine/core';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import type { Metadata } from 'next';
@@ -21,16 +20,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
         <ColorSchemeScript />
       </head>
       <body className={inter.className}>
-        <div className="layout">
-          <Providers>
-            <Navbar />
-            <main className="layoutMain">
-              <Stack pl={24} pr={24} h={'100%'}>
-                {children}
-              </Stack>
-            </main>
-          </Providers>
-        </div>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

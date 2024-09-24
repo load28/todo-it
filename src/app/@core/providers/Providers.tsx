@@ -1,17 +1,13 @@
-import { ApolloClientProvider } from '@/app/@core/providers/Apollo.context';
 import { ClientSessionProvider } from '@/app/@core/providers/Session.context';
 import { TzProvider } from '@/app/@core/providers/Timezone.context';
-import { QueryProviders } from '@/app/query-provider';
 import { createTheme, MantineProvider } from '@mantine/core';
 import { PropsWithChildren } from 'react';
+import { QueryProvider } from '@/app/@core/providers/QueryProvider';
 
 const theme = createTheme({});
 
 async function getTimezone(): Promise<string> {
   return 'Asia/Seoul';
-  // const userId = '1';
-  // const res = await fetch(`${process.env.API_URL}/timezone/get?userId=${userId}`);
-  // return res.json();
 }
 
 export async function Providers({ children }: PropsWithChildren) {
@@ -19,13 +15,11 @@ export async function Providers({ children }: PropsWithChildren) {
 
   return (
     <MantineProvider theme={theme}>
-      <ApolloClientProvider>
+      <QueryProvider>
         <ClientSessionProvider>
-          <QueryProviders>
-            <TzProvider value={{ tz }}>{children}</TzProvider>
-          </QueryProviders>
+          <TzProvider value={{ tz }}>{children}</TzProvider>
         </ClientSessionProvider>
-      </ApolloClientProvider>
+      </QueryProvider>
     </MantineProvider>
   );
 }

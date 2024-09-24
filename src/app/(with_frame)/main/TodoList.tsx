@@ -2,7 +2,7 @@
 
 import { SaveTodoModal } from '@/app/@components/SaveTodoModal';
 import { ModalControlProvider } from '@/app/@core/providers/ModalControl.context';
-import classes from '@/app/@main/TodoList.module.css';
+import classes from '@/app/(with_frame)/main/TodoList.module.css';
 import { Todo } from '@/app/api/todo';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';

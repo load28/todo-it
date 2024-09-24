@@ -1,5 +1,5 @@
-import { TodoPage } from '@/app/@main/TodoPage';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
-  return <TodoPage />;
+export default function Page() {
+  redirect('/main');
 }
