@@ -2,7 +2,12 @@ import { NextAuthConfig } from 'next-auth';
 import Google from '@auth/core/providers/google';
 
 export const authConfig = {
-  providers: [Google],
+  providers: [
+    Google({
+      clientId: process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    }),
+  ],
   callbacks: {
     async signIn(res) {
       const googleResponse = await fetch('http://localhost:8080/auth/google', {
