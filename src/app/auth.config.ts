@@ -15,7 +15,7 @@ export const authConfig = {
         return true;
       } else if (googleResponse.status === 404) {
         const baseUrl = process.env.APP_URL;
-        return new URL('/signup', baseUrl).toString();
+        return new URL('http://localhost:3000/signup', baseUrl).toString();
       } else {
         return false;
       }
@@ -24,5 +24,5 @@ export const authConfig = {
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
-  debug: false,
+  debug: true,
 } satisfies NextAuthConfig;
