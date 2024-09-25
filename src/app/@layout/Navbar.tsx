@@ -24,7 +24,7 @@ export function Navbar() {
   };
 
   const signInHandler = async () => {
-    await googleLogin('/main');
+    await googleLogin();
   };
 
   const links = useMemo(() => {
