@@ -30,7 +30,6 @@ export async function GET(req: NextRequest) {
     const data = await response.json();
 
     if (data.error) {
-      console.log(data.error);
       return new Response(data.error, { status: 500 });
     }
 
