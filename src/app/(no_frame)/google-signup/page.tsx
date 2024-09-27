@@ -24,6 +24,7 @@ export default function GoogleSignup() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const code = useMemo(() => searchParams.get('code'), [searchParams]);
+  // todo 에러코드 반환시 동작 정의
   const { data, isSuccess } = useQuery({
     queryKey: ['signup', 'userInfo', code],
     queryFn: ({ queryKey }) => getUserInfo(queryKey[2] as string),

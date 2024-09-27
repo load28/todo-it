@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
-import { getAbsoluteRouteUrl, getAuthGoogleSecret, getPublicAuthGoogleId } from '@/core/utils';
+import { getServerEnvValue } from '@/core/env-server';
 
 export async function GET(req: NextRequest) {
+  const { NEXT_PUBLIC_AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, NEXT_PUBLIC_APP_HOST } = await getServerEnvValue();
   const code = req.nextUrl.searchParams.get('code');
 
   if (!code) {
@@ -10,9 +11,9 @@ export async function GET(req: NextRequest) {
 
   const params = new URLSearchParams({
     code,
-    client_id: getPublicAuthGoogleId(process),
-    client_secret: getAuthGoogleSecret(process),
-    redirect_uri: getAbsoluteRouteUrl('/google-signup', process),
+    client_id: NEXT_PUBLIC_AUTH_GOOGLE_ID,
+    client_secret: AUTH_GOOGLE_SECRET,
+    redirect_uri: `${NEXT_PUBLIC_APP_HOST}/google-signup`,
     grant_type: 'authorization_code',
   });
 

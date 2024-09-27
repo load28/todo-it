@@ -1,18 +1,16 @@
 'use client';
 
 import { Button, Text } from '@mantine/core';
-import { getAbsoluteRouteUrl, getPublicAuthGoogleId } from '@/core/utils';
+import { useEnv } from '@/core/env-hook';
 
 export default function SignUp() {
-  const getUser = async () => {
-    const client_id = getPublicAuthGoogleId(process);
-    console.log(client_id);
-    const redirect_uri = getAbsoluteRouteUrl('/google-signup', process); // 콜백 URL
+  const [NEXT_PUBLIC_AUTH_GOOGLE_ID, NEXT_PUBLIC_APP_HOST] = useEnv(['NEXT_PUBLIC_AUTH_GOOGLE_ID', 'NEXT_PUBLIC_APP_HOST']);
 
+  const getUser = async () => {
     window.location.href =
       `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${client_id}` +
-      `&redirect_uri=${redirect_uri}` +
+      `client_id=${NEXT_PUBLIC_AUTH_GOOGLE_ID}` +
+      `&redirect_uri=${NEXT_PUBLIC_APP_HOST}/google-signup` +
       `&response_type=code` +
       `&scope=email profile` +
       `&access_type=offline`;
@@ -27,7 +25,3 @@ export default function SignUp() {
     </>
   );
 }
-
-const get = (p) => {
-  return p['test'];
-};
