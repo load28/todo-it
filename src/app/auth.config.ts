@@ -1,11 +1,12 @@
 import { NextAuthConfig } from 'next-auth';
 import Google from '@auth/core/providers/google';
+import { getAuthGoogleSecret, getPublicAuthGoogleId } from '@/core/utils';
 
 export const authConfig = {
   providers: [
     Google({
-      clientId: process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      clientId: getPublicAuthGoogleId(process),
+      clientSecret: getAuthGoogleSecret(process),
     }),
   ],
   callbacks: {
@@ -29,5 +30,5 @@ export const authConfig = {
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
-  debug: true,
+  debug: false,
 } satisfies NextAuthConfig;

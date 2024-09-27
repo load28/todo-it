@@ -7,17 +7,20 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 
 const getUserInfo = async (code: string) => {
-  try {
-    const queryParams = new URLSearchParams({ code }).toString();
-    const res = await fetch(`/api/auth/user/accessToken?${queryParams}`, { method: 'GET' });
+  const queryParams = new URLSearchParams({ code }).toString();
+  const accessTokenResponse = await fetch(`/api/auth/user/access-token?${queryParams}`, { method: 'GET' });
+  const { access_token } = await accessTokenResponse.json();
 
-    return await res.json();
-  } catch (e) {
-    return null;
-  }
+  const userInfoResponse = await fetch(`/api/auth/user/user-info`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ access_token }),
+  });
+
+  return await userInfoResponse.json();
 };
 
-export default function Session() {
+export default function GoogleSignup() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const code = useMemo(() => searchParams.get('code'), [searchParams]);

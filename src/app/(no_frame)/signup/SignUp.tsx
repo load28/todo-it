@@ -1,12 +1,13 @@
 'use client';
 
 import { Button, Text } from '@mantine/core';
+import { getAbsoluteRouteUrl, getPublicAuthGoogleId } from '@/core/utils';
 
-// TODO 구글 api를 이용해서 직접 유저의 로그인 정보를 가져온다. 그리고 정보를 화면에 표출함 (세션 X)
 export default function SignUp() {
   const getUser = async () => {
-    const client_id = process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID;
-    const redirect_uri = 'http://localhost:3000/session'; // 콜백 URL
+    const client_id = getPublicAuthGoogleId(process);
+    console.log(client_id);
+    const redirect_uri = getAbsoluteRouteUrl('/google-signup', process); // 콜백 URL
 
     window.location.href =
       `https://accounts.google.com/o/oauth2/v2/auth?` +
@@ -26,3 +27,7 @@ export default function SignUp() {
     </>
   );
 }
+
+const get = (p) => {
+  return p['test'];
+};
