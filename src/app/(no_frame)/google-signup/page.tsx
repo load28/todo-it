@@ -5,41 +5,44 @@ import { useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
+import { AuthUser } from '@/types/auth';
+import { userInfo } from 'node:os';
 
-const getUserInfo = async (code: string) => {
+const getUserInfo = async (code: string): Promise<AuthUser | undefined> => {
   const queryParams = new URLSearchParams({ code }).toString();
   const accessTokenResponse = await fetch(`/api/auth/user/access-token?${queryParams}`, { method: 'GET' });
-  const { access_token } = await accessTokenResponse.json();
 
+  const { access_token } = await accessTokenResponse.json();
   const userInfoResponse = await fetch(`/api/auth/user/user-info`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ access_token }),
   });
 
-  return await userInfoResponse.json();
+  const { email, name, picture } = await userInfoResponse.json();
+  return { email, name, picture };
 };
 
 export default function GoogleSignup() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const code = useMemo(() => searchParams.get('code'), [searchParams]);
-  // todo 에러코드 반환시 동작 정의
-  const { data, isSuccess } = useQuery({
+  const { data, isSuccess, isError } = useQuery({
     queryKey: ['signup', 'userInfo', code],
     queryFn: ({ queryKey }) => getUserInfo(queryKey[2] as string),
     enabled: !!code,
+    retry: 1,
   });
 
   useEffect(() => {
-    if (!code) {
+    if (isError || !code) {
       router.replace('/signup');
     }
-  }, [code]);
+  }, [isError, code, router]);
 
   return (
     <>
-      {isSuccess && (
+      {isSuccess && data && (
         <>
           <Text size={'lg'}>{data.email}</Text>
           <Text size={'lg'}>{data.name}</Text>

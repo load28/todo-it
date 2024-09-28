@@ -1,7 +1,7 @@
 type AuthUser = {
   email: string;
   name: string;
-  pictureUrl: string;
+  picture: string;
 };
 
 export type { AuthUser };
