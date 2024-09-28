@@ -1,11 +1,10 @@
 'use client';
 
-import { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
-import { getServerEnvValue } from '@/app/@core/providers/Env.server';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { Env, EnvContext } from '@/app/@core/providers/env/EnvContext';
 
 const CLIENT_ENV_PREFIX = 'NEXT_PUBLIC_';
 
-type Env = Awaited<ReturnType<typeof getServerEnvValue>>;
 type EnvKey = keyof Env;
 type ClientEnvKey = Extract<EnvKey, `${typeof CLIENT_ENV_PREFIX}${string}`>;
 
@@ -15,8 +14,6 @@ const validateEnv = (keys: ClientEnvKey[]) => {
     throw Error(`${invalidKeys.join(',')} is a server-side variable. Use 'NEXT_PUBLIC_' prefix for client-side access.`);
   }
 };
-
-const EnvContext = createContext<Env | undefined>(undefined);
 
 /**
  * A hook to easily access public environment variables in client components.
@@ -43,8 +40,4 @@ const useEnv = (keys: ClientEnvKey[]): string[] => {
   return selectedEnv;
 };
 
-function EnvProvider({ value, children }: PropsWithChildren<{ value: Env }>) {
-  return <EnvContext.Provider value={value}>{children}</EnvContext.Provider>;
-}
-
-export { useEnv, EnvProvider };
+export { useEnv };

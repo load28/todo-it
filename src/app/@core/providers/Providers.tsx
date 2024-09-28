@@ -4,7 +4,7 @@ import { createTheme, MantineProvider } from '@mantine/core';
 import { PropsWithChildren } from 'react';
 import { QueryProvider } from '@/app/@core/providers/QueryProvider';
 import { getServerEnvValue } from '@/app/@core/providers/Env.server';
-import { EnvProvider } from '@/app/@core/providers/Env.context';
+import { EnvProvider } from '@/app/@core/providers/env/EnvProvider';
 
 const theme = createTheme({});
 
