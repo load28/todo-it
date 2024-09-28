@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Text } from '@mantine/core';
-import { useEnv } from '@/core/env-hook';
+import { useEnv } from '@/app/@core/providers/Env.context';
 
 export default function SignUp() {
   const [NEXT_PUBLIC_AUTH_GOOGLE_ID, NEXT_PUBLIC_APP_HOST] = useEnv(['NEXT_PUBLIC_AUTH_GOOGLE_ID', 'NEXT_PUBLIC_APP_HOST']);

@@ -9,6 +9,14 @@ const ENV = {
   NEXT_PUBLIC_AUTH_GOOGLE_ID: process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID as string,
 } as const;
 
+/**
+ * This function is intended to be used only in server components.
+ * It returns environment variables, including sensitive server-side variables,
+ * which should not be exposed to the client to avoid security risks.
+ * Therefore, this function should never be used in client components.
+ *
+ * @returns An object containing both public and server-side environment variables.
+ */
 const getServerEnvValue = async (): Promise<typeof ENV> => ENV;
 
 export { getServerEnvValue };

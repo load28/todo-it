@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getServerEnvValue } from '@/core/env-server';
+import { getServerEnvValue } from '@/app/@core/providers/Env.server';
 
 export async function GET(req: NextRequest) {
   const { NEXT_PUBLIC_AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, NEXT_PUBLIC_APP_HOST } = await getServerEnvValue();

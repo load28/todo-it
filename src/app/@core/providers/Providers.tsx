@@ -3,8 +3,8 @@ import { TzProvider } from '@/app/@core/providers/Timezone.context';
 import { createTheme, MantineProvider } from '@mantine/core';
 import { PropsWithChildren } from 'react';
 import { QueryProvider } from '@/app/@core/providers/QueryProvider';
-import EnvProvider from '@/core/EnvProvider';
-import { getServerEnvValue } from '@/core/env-server';
+import { getServerEnvValue } from '@/app/@core/providers/Env.server';
+import { EnvProvider } from '@/app/@core/providers/Env.context';
 
 const theme = createTheme({});
 
