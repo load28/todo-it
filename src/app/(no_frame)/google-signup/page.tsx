@@ -1,12 +1,11 @@
 'use client';
 
+import { AuthUser } from '@/types/auth';
 import { Text } from '@mantine/core';
-import { useEffect, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
-import { AuthUser } from '@/types/auth';
-import { userInfo } from 'node:os';
+import { useEffect, useMemo } from 'react';
 
 const getUserInfo = async (code: string): Promise<AuthUser | undefined> => {
   const queryParams = new URLSearchParams({ code }).toString();
