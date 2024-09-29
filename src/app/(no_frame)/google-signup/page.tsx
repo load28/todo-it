@@ -34,10 +34,11 @@ export default function GoogleSignup() {
   });
 
   useEffect(() => {
-    if (isError || !code) {
-      router.replace('/signup');
-    }
-  }, [isError, code, router]);
+    //TODO 에러를 감지해서 처리하는 것은 상위 바운더리에서 해야함
+    // if (isError || !code) {
+    //   router.replace('/signup');
+    // }
+  }, [code, router]);
 
   return (
     <>
