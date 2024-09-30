@@ -1,10 +1,10 @@
-import { ClientSessionProvider } from '@/app/@core/providers/Session.context';
-import { TzProvider } from '@/app/@core/providers/Timezone.context';
 import { createTheme, MantineProvider } from '@mantine/core';
 import { PropsWithChildren } from 'react';
 import { QueryProvider } from '@/app/@core/providers/QueryProvider';
 import { getServerEnvValue } from '@/app/@core/providers/env/EnvServer';
 import { EnvProvider } from '@/app/@core/providers/env/EnvProvider';
+import { ClientSessionProvider } from '@/app/@core/providers/SessionProvider';
+import { TzProvider } from '@/app/@core/providers/TimezoneProvider';
 
 const theme = createTheme({});
 

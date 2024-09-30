@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.11.1",
+    "@auth/dynamodb-adapter": "^2.5.3",
+    "@aws-sdk/client-dynamodb": "^3.658.1",
+    "@aws-sdk/lib-dynamodb": "^3.658.1",
     "@mantine/core": "^7.11.0",
     "@mantine/dates": "^7.11.1",
     "@mantine/hooks": "^7.11.0",

@@ -1,7 +1,7 @@
 'use client';
 
-import { useTzContext } from '@/app/@core/providers/Timezone.context';
 import { Input, Select, Stack, Text } from '@mantine/core';
+import { useTzContext } from '@/app/@core/providers/TimezoneProvider';
 
 export function SettingsPage() {
   const tzCtx = useTzContext();
