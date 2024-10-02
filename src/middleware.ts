@@ -2,7 +2,7 @@ import { auth } from '@/app/auth';
 import { NextResponse } from 'next/server';
 
 function isProtectedRoute(pathname: string): boolean {
-  return ['/main', '/settings'].some((route) => pathname.startsWith(route));
+  return config.matcher.some((route) => pathname.startsWith(route));
 }
 
 export default auth((req) => {
