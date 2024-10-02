@@ -1,0 +1,18 @@
+import { auth } from '@/app/auth';
+import { NextResponse } from 'next/server';
+
+function isProtectedRoute(pathname: string): boolean {
+  return ['/main', '/settings'].some((route) => pathname.startsWith(route));
+}
+
+export default auth((req) => {
+  if (isProtectedRoute(req.nextUrl.pathname)) {
+    if (!req.auth) {
+      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/login`);
+    }
+
+    return NextResponse.next();
+  }
+});
+
+export const config = { matcher: ['/main', '/settings'] };
