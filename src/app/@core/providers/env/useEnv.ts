@@ -10,12 +10,12 @@ type EnvKey = keyof Env;
 type ClientEnvKey = Extract<EnvKey, `${typeof CLIENT_ENV_PREFIX}${string}`>;
 
 const getInvalidKeys = (keys: ClientEnvKey[]) => keys.filter((key) => !key.startsWith(CLIENT_ENV_PREFIX));
-const throwInvalidKeys = (keys: ClientEnvKey[]) => {
+const throwInvalidKeyError = (keys: ClientEnvKey[]) => {
   if (keys.length) {
     throw Error(`${keys.join(',')} is a server-side variable. Use 'NEXT_PUBLIC_' prefix for client-side access.`);
   }
 };
-const validateEnv = (keys: ClientEnvKey[]) => flow(getInvalidKeys, throwInvalidKeys)(keys);
+const validateEnv = (keys: ClientEnvKey[]) => flow(getInvalidKeys, throwInvalidKeyError)(keys);
 
 /**
  * A hook to easily access public environment variables in client components.
