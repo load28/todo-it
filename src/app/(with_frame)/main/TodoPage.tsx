@@ -13,17 +13,10 @@ export function TodoPage() {
   const tzCtx = useTzContext();
   const client = useQueryClient();
   const { data: todoMap, isLoading } = useTodoQuery(tzCtx?.tz);
-  const { sortedDates } = useMemo(() => {
-    const dates = Object.keys(todoMap || {});
-    const sortedDates = sortDate(dates, 'des');
-    return { sortedDates };
-  }, [todoMap]);
+  const sortedDates = useMemo(() => sortDate(Object.keys(todoMap || {}), 'des'), [todoMap]);
 
   const fetchData = async () => {
-    await client.prefetchQuery({
-      queryKey: ['todos'],
-      queryFn: getTodos(tzCtx?.tz),
-    });
+    await client.prefetchQuery({ queryKey: ['todos'], queryFn: getTodos(tzCtx?.tz) });
     return dehydrate(client);
   };
 
