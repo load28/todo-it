@@ -17,9 +17,7 @@ const useTodoToggle = (date: string) => {
         [date]: allTodos[date].map((todo) => (todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo)),
       };
     },
-    onSuccess: (todos) => {
-      queryClient.setQueryData([TODOS_QUERY_KEY], todos);
-    },
+    onSuccess: (todos) => queryClient.setQueryData([TODOS_QUERY_KEY], todos),
   });
 };
 
