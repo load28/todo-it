@@ -14,13 +14,8 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
   const [opened, { open, close }] = useDisclosure(false);
   const todoMutation = useTodoToggle(date);
 
-  const checkboxHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    todoMutation.mutate(e.target.id);
-  };
-
-  const editHandler = () => {
-    open();
-  };
+  const checkboxHandler = (e: ChangeEvent<HTMLInputElement>) => todoMutation.mutate(e.target.id);
+  const editHandler = () => open();
 
   return (
     <div>
