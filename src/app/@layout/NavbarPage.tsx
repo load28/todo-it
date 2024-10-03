@@ -1,5 +1,8 @@
-import { auth } from '@/app/auth';
 import { Navbar } from '@/app/@layout/Navbar';
+import { sessionQueryOptions } from '@/app/@core/query/session-query';
+import { getQueryClient } from '@/app/@core/providers/query/getQueryClient';
+import { dehydrate } from '@tanstack/query-core';
+import { HydrationBoundary } from '@tanstack/react-query';
 
 /**
  * 기본적인 데이터는 서버 컴포넌트에서 만들어서 내려주는 방향으로 작업해야함
@@ -7,11 +10,12 @@ import { Navbar } from '@/app/@layout/Navbar';
  * 서버 컴포넌트는 Page 를 붙인다
  */
 export default async function NavbarPage() {
-  const session = await auth();
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery(sessionQueryOptions);
 
-  if (!session?.user?.email || !session?.user?.image) {
-    return;
-  }
-
-  return <Navbar userEmail={session.user.email} userImage={session.user.image} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Navbar />
+    </HydrationBoundary>
+  );
 }

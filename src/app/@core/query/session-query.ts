@@ -1,5 +1,10 @@
-'use server';
+import { queryOptions } from '@tanstack/react-query';
 
-// TODO 프리패치와 쿼리 데이터를 가져오는 구조를 일반화하여 로직을 재활용하게 해야함
-const sessionPrefetchQuery = () => {};
-const sessionQuery = () => {};
+const SESSION_QUERY_KEY = 'session';
+export const sessionQueryOptions = queryOptions({
+  queryKey: [SESSION_QUERY_KEY],
+  queryFn: async () => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/session`);
+    return response.json();
+  },
+});

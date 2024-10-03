@@ -2,12 +2,12 @@
 
 import { NavbarHeader } from '@/app/@layout/NavbarHeader';
 import { Group, Stack } from '@mantine/core';
-import React, { PropsWithoutRef } from 'react';
+import React from 'react';
 import classes from './Navbar.module.css';
 import NavbarBottom from '@/app/@layout/NavbarBottom';
 import NavbarMenus from '@/app/@layout/NavbarMenus';
 
-export function Navbar({ userEmail, userImage }: PropsWithoutRef<{ userEmail: string; userImage: string }>) {
+export function Navbar() {
   return (
     <nav className={classes.navbar}>
       <Stack flex={'1'} gap={64} justify={'space-between'}>
@@ -20,7 +20,7 @@ export function Navbar({ userEmail, userImage }: PropsWithoutRef<{ userEmail: st
           </Stack>
         </Stack>
         <Stack gap={0}>
-          <NavbarBottom userEmail={userEmail} userImage={userImage} />
+          <NavbarBottom />
         </Stack>
       </Stack>
     </nav>
