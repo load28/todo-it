@@ -7,35 +7,12 @@ import { Todo } from '@/app/api/todo';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { ChangeEvent, PropsWithChildren } from 'react';
+import { useTodoToggle } from '@/app/@core/query/todo-query';
 
 export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; date: string }>) {
   const [opened, { open, close }] = useDisclosure(false);
-  const queryClient = useQueryClient();
-  const todoMutation = useMutation({
-    mutationKey: ['todos'],
-    mutationFn: async (id: string) => {
-      const allTodos = queryClient.getQueryData<Record<string, Todo[]>>(['todos']) || {};
-      return {
-        ...allTodos,
-        [date]: [
-          ...allTodos[date].map((todo) => {
-            if (todo.id === id) {
-              return {
-                ...todo,
-                isComplete: !todo.isComplete,
-              };
-            }
-            return todo;
-          }),
-        ],
-      };
-    },
-    onSuccess: (todos) => {
-      queryClient.setQueryData(['todos'], todos);
-    },
-  });
+  const todoMutation = useTodoToggle(date);
 
   const checkboxHandler = (e: ChangeEvent<HTMLInputElement>) => {
     todoMutation.mutate(e.target.id);

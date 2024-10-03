@@ -4,17 +4,15 @@ import { TodoList } from '@/app/(with_frame)/main/TodoList';
 import { getTodos } from '@/app/api/todo';
 import { sortDate } from '@/core/date';
 import { Divider, Stack } from '@mantine/core';
-import { dehydrate, HydrationBoundary, useQuery, useQueryClient } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary, useQueryClient } from '@tanstack/react-query';
 import React, { useMemo } from 'react';
 import { useTzContext } from '@/app/@core/providers/TimezoneProvider';
+import { useTodoQuery } from '@/app/@core/query/todo-query';
 
 export function TodoPage() {
   const tzCtx = useTzContext();
   const client = useQueryClient();
-  const { data: todoMap, isLoading } = useQuery({
-    queryKey: ['todos'],
-    queryFn: getTodos(tzCtx?.tz),
-  });
+  const { data: todoMap, isLoading } = useTodoQuery(tzCtx?.tz);
   const { sortedDates } = useMemo(() => {
     const dates = Object.keys(todoMap || {});
     const sortedDates = sortDate(dates, 'des');
