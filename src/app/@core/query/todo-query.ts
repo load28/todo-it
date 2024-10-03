@@ -14,17 +14,7 @@ const useTodoToggle = (date: string) => {
       const allTodos = queryClient.getQueryData<Record<string, Todo[]>>([TODOS_QUERY_KEY]) || {};
       return {
         ...allTodos,
-        [date]: [
-          ...allTodos[date].map((todo) => {
-            if (todo.id === id) {
-              return {
-                ...todo,
-                isComplete: !todo.isComplete,
-              };
-            }
-            return todo;
-          }),
-        ],
+        [date]: allTodos[date].map((todo) => (todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo)),
       };
     },
     onSuccess: (todos) => {
