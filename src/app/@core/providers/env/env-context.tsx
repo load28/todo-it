@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext } from 'react';
-import { getServerEnvValue } from '@/app/@core/providers/env/EnvServer';
+import { getServerEnvValue } from '@/app/@core/providers/env/env-server';
 
 type Env = Awaited<ReturnType<typeof getServerEnvValue>>;
 const EnvContext = createContext<Env | undefined>(undefined);
