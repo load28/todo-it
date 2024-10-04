@@ -1,5 +1,3 @@
-'use client';
-
 import { NavbarHeader } from '@/app/@layout/NavbarHeader';
 import { Group, Stack } from '@mantine/core';
 import React from 'react';

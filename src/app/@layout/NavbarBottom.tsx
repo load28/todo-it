@@ -9,9 +9,7 @@ import { useSessionQuery } from '@/app/@core/query/session-query';
 export default function NavbarBottom() {
   const { data: session } = useSessionQuery();
 
-  const singOutHandler = async () => {
-    await googleSignOut();
-  };
+  const singOutHandler = async () => await googleSignOut();
 
   if (!session) {
     return null;

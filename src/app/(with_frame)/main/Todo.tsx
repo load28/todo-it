@@ -5,11 +5,12 @@ import { sortDate } from '@/core/date';
 import { Divider, Stack } from '@mantine/core';
 import React, { useMemo } from 'react';
 import { useTzContext } from '@/app/@core/providers/TimezoneProvider';
-import { useTodoQuery } from '@/app/@core/query/todo-query';
+import { todoToMap, useTodoQuery } from '@/app/@core/query/todo-query';
 
-export function TodoPage() {
+export function Todo() {
   const tzCtx = useTzContext();
-  const { data: todoMap, isLoading } = useTodoQuery(tzCtx?.tz);
+  const { data, isLoading } = useTodoQuery();
+  const todoMap = useMemo(() => todoToMap(tzCtx?.tz, data), [data, tzCtx?.tz]);
   const sortedDates = useMemo(() => sortDate(Object.keys(todoMap || {}), 'des'), [todoMap]);
 
   if (isLoading) {

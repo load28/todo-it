@@ -1,6 +1,4 @@
-'use client';
-
-import { utcDayjs } from '@/core/date';
+import { NextResponse } from 'next/server';
 
 export interface Todo {
   id: string;
@@ -9,7 +7,7 @@ export interface Todo {
   isComplete: boolean;
 }
 
-export const TODOS: Todo[] = [
+const TODOS: Todo[] = [
   {
     id: '1',
     description:
@@ -42,13 +40,8 @@ export const TODOS: Todo[] = [
     isComplete: false,
   },
 ];
-export const getTodos = (tz: string | undefined) => async () => {
-  const todoMap = TODOS?.reduce<Record<string, Todo[]>>((acc, todo) => {
-    const tzDate = utcDayjs(todo.date).tz(tz).format('YYYY-MM-DD');
-    return {
-      ...acc,
-      [tzDate]: [...(acc[tzDate] || []), todo],
-    };
-  }, {});
-  return Promise.resolve(todoMap);
-};
+
+export async function GET() {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  return NextResponse.json(TODOS);
+}

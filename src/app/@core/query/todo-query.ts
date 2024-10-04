@@ -1,24 +1,38 @@
-'use client';
-
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getTodos, Todo } from '@/app/api/todo';
+import { QueryClient, queryOptions, useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { Todo } from '@/app/api/todo/route';
+import { utcDayjs } from '@/core/date';
 
 const TODOS_QUERY_KEY = 'todos';
+const todoQueryOptions = queryOptions({
+  queryKey: [TODOS_QUERY_KEY],
+  queryFn: async (): Promise<Todo[]> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo`);
+    return await res.json();
+  },
+});
 
-const useTodoQuery = (tz?: string) => useQuery({ queryKey: [TODOS_QUERY_KEY], queryFn: getTodos(tz) });
-const useTodoToggle = (date: string) => {
+export const useTodoQuery = () => useSuspenseQuery(todoQueryOptions);
+export const todoQueryPrefetch = async (queryClient: QueryClient) => await queryClient.prefetchQuery(todoQueryOptions);
+export const useTodoToggle = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [TODOS_QUERY_KEY],
-    mutationFn: async (id: string): Promise<Record<string, Todo[]>> => {
-      const allTodos = queryClient.getQueryData<Record<string, Todo[]>>([TODOS_QUERY_KEY]) || {};
-      return {
-        ...allTodos,
-        [date]: allTodos[date].map((todo) => (todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo)),
-      };
+    mutationFn: async (id: string): Promise<Todo[]> => {
+      const todos = queryClient.getQueryData<Todo[]>([TODOS_QUERY_KEY]);
+      return todos?.map((todo) => (todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo)) || [];
     },
-    onSuccess: (todos) => queryClient.setQueryData([TODOS_QUERY_KEY], todos),
+    onSuccess: (todos: Todo[]) => queryClient.setQueryData([TODOS_QUERY_KEY], todos),
   });
 };
 
-export { useTodoToggle, useTodoQuery };
+export const todoToMap = (tz?: string, todos?: Todo[]) => {
+  return (
+    todos?.reduce<Record<string, Todo[]>>((acc, todo) => {
+      const tzDate = utcDayjs(todo.date).tz(tz).format('YYYY-MM-DD');
+      return {
+        ...acc,
+        [tzDate]: [...(acc[tzDate] || []), todo],
+      };
+    }, {}) || {}
+  );
+};

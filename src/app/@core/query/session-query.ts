@@ -1,16 +1,16 @@
 import { QueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { auth } from '@/app/@core/auth/auth';
 
-type TodoItSessionInfo = {
+export type TodoItSessionInfo = {
   email: string;
   image: string;
 };
 
-type TodoItSessionResult = TodoItSessionInfo | null;
+export type TodoItSessionResult = TodoItSessionInfo | null;
 
 const SESSION_QUERY_KEY = 'session';
-export const useSessionQuery = () =>
-  useSuspenseQuery({
+export const useSessionQuery = () => {
+  return useSuspenseQuery({
     queryKey: [SESSION_QUERY_KEY],
     queryFn: async (): Promise<TodoItSessionResult> => {
       const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/session`);
@@ -21,6 +21,7 @@ export const useSessionQuery = () =>
       };
     },
   });
+};
 
 export async function sessionQueryPrefetch(queryClient: QueryClient) {
   await queryClient.prefetchQuery({

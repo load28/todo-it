@@ -3,7 +3,7 @@
 import { SaveTodoModal } from '@/app/@components/SaveTodoModal';
 import { ModalControlProvider } from '@/app/@core/providers/ModalControl.context';
 import classes from '@/app/(with_frame)/main/TodoList.module.css';
-import { Todo } from '@/app/api/todo';
+import { Todo } from '@/app/api/todo/route';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
@@ -12,7 +12,7 @@ import { useTodoToggle } from '@/app/@core/query/todo-query';
 
 export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; date: string }>) {
   const [opened, { open, close }] = useDisclosure(false);
-  const todoMutation = useTodoToggle(date);
+  const todoMutation = useTodoToggle();
 
   const checkboxHandler = (e: ChangeEvent<HTMLInputElement>) => todoMutation.mutate(e.target.id);
   const editHandler = () => open();
