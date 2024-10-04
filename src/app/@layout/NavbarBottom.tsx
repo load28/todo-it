@@ -3,7 +3,7 @@
 import { Avatar, Divider, Group, Menu, Text, UnstyledButton } from '@mantine/core';
 import { IconLogout } from '@tabler/icons-react';
 import React from 'react';
-import { googleSignOut } from '@/app/auth-action';
+import { googleSignOut } from '@/app/@core/auth/auth-action';
 import { sessionQueryOptions } from '@/app/@core/query/session-query';
 import { useSuspenseQuery } from '@tanstack/react-query';
 

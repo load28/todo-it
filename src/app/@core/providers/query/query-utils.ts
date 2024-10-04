@@ -9,7 +9,7 @@ function makeQueryClient() {
 
 let browseQueryClient: QueryClient | undefined = undefined;
 
-export function getQueryClient() {
+export function queryUtils() {
   if (isServer) {
     return makeQueryClient();
   } else {

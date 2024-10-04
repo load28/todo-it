@@ -1,4 +1,4 @@
-import { auth } from '@/app/auth';
+import { auth } from '@/app/@core/auth/auth';
 import { NextResponse } from 'next/server';
 
 function isProtectedRoute(pathname: string): boolean {

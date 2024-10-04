@@ -1,8 +1,8 @@
-import { Navbar } from '@/app/@layout/Navbar';
-import { sessionQueryOptions } from '@/app/@core/query/session-query';
-import { getQueryClient } from '@/app/@core/providers/query/getQueryClient';
-import { dehydrate } from '@tanstack/query-core';
-import { HydrationBoundary } from '@tanstack/react-query';
+import {Navbar} from '@/app/@layout/Navbar';
+import {sessionQueryOptions} from '@/app/@core/query/session-query';
+import {queryUtils} from '@/app/@core/providers/query/query-utils';
+import {dehydrate} from '@tanstack/query-core';
+import {HydrationBoundary} from '@tanstack/react-query';
 
 /**
  * 기본적인 데이터는 서버 컴포넌트에서 만들어서 내려주는 방향으로 작업해야함
@@ -10,7 +10,7 @@ import { HydrationBoundary } from '@tanstack/react-query';
  * 서버 컴포넌트는 Page 를 붙인다
  */
 export default async function NavbarPage() {
-  const queryClient = getQueryClient();
+  const queryClient = queryUtils();
   await queryClient.prefetchQuery(sessionQueryOptions);
 
   return (
