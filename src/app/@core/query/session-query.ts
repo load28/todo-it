@@ -1,8 +1,5 @@
-import { HydrationBoundary, useSuspenseQuery } from '@tanstack/react-query';
-import { getQueryClient } from '@/app/@core/providers/query/query-utils';
+import { QueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { auth } from '@/app/@core/auth/auth';
-import { dehydrate } from '@tanstack/query-core';
-import { PropsWithChildren } from 'react';
 
 type TodoItSessionInfo = {
   email: string;
@@ -25,8 +22,7 @@ export const useSessionQuery = () =>
     },
   });
 
-export async function SessionQueryPrefetchBoundary({ children }: PropsWithChildren) {
-  const queryClient = getQueryClient();
+export async function sessionQueryPrefetch(queryClient: QueryClient) {
   await queryClient.prefetchQuery({
     queryKey: [SESSION_QUERY_KEY],
     queryFn: async (): Promise<TodoItSessionResult> => {
@@ -41,6 +37,4 @@ export async function SessionQueryPrefetchBoundary({ children }: PropsWithChildr
       };
     },
   });
-
-  return <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>;
 }

@@ -4,7 +4,7 @@ import { Avatar, Divider, Group, Menu, Text, UnstyledButton } from '@mantine/cor
 import { IconLogout } from '@tabler/icons-react';
 import React from 'react';
 import { googleSignOut } from '@/app/@core/auth/auth-action';
-import { useSessionQuery } from '@/app/@core/query/sessionQuery';
+import { useSessionQuery } from '@/app/@core/query/session-query';
 
 export default function NavbarBottom() {
   const { data: session } = useSessionQuery();
