@@ -3,7 +3,10 @@ import { defaultShouldDehydrateQuery, isServer } from '@tanstack/query-core';
 
 function makeQueryClient() {
   return new QueryClient({
-    defaultOptions: { dehydrate: { shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) || query.state.status === 'pending' } },
+    defaultOptions: {
+      queries: { staleTime: 1000 * 60 * 60, gcTime: 1000 * 60 * 5 },
+      dehydrate: { shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) || query.state.status === 'pending' },
+    },
   });
 }
 
