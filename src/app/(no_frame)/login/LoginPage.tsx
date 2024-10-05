@@ -9,11 +9,11 @@ export default function LoginPage() {
 
   return (
     <Stack justify={'center'} align={'center'} m={'auto'} h={'100vh'}>
-      <Text size={'xl'} fw={'bold'}>
+      <Text variant={'gradient'} size={'xl'} fw={'bold'} c={'blue.5'}>
         Todo it
       </Text>
-      <Button variant={'outline'} onClick={login}>
-        Google Login
+      <Button variant={'default'} onClick={login}>
+        Start with Google
       </Button>
     </Stack>
   );
