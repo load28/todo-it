@@ -1,6 +1,6 @@
 import { QueryClient, queryOptions, useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { Todo } from '@/app/api/todo/route';
-import { utcDayjs } from '@/core/date';
+import { utcDayjs } from '@/app/@core/utils/date';
 
 const TODOS_QUERY_KEY = 'todos';
 const todoQueryOptions = queryOptions({

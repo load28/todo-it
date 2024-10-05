@@ -1,7 +1,7 @@
 'use client';
 
 import { TodoList } from '@/app/(with_frame)/main/TodoList';
-import { sortDate } from '@/core/date';
+import { sortDate } from '@/app/@core/utils/date';
 import { Divider, Stack } from '@mantine/core';
 import React, { useMemo } from 'react';
 import { useTzContext } from '@/app/@core/providers/TimezoneProvider';
