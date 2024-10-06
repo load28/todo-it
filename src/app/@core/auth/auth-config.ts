@@ -1,25 +1,7 @@
 import { NextAuthConfig } from 'next-auth';
 import Google from '@auth/core/providers/google';
-import { DynamoDB, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBAdapter } from '@auth/dynamodb-adapter';
-
-const config: DynamoDBClientConfig = {
-  credentials: {
-    accessKeyId: process.env.AUTH_DYNAMODB_ID as string,
-    secretAccessKey: process.env.AUTH_DYNAMODB_SECRET as string,
-  },
-  region: process.env.AUTH_DYNAMODB_REGION,
-  endpoint: process.env.AUTH_DYNAMODB_END_POINT,
-};
-
-const client = DynamoDBDocument.from(new DynamoDB(config), {
-  marshallOptions: {
-    convertEmptyValues: true,
-    removeUndefinedValues: true,
-    convertClassInstanceToMap: true,
-  },
-});
+import { dbDocument } from '@/app/@core/db/dynamoDB';
 
 export const authConfig = {
   providers: [
@@ -36,6 +18,6 @@ export const authConfig = {
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
-  adapter: DynamoDBAdapter(client),
+  adapter: DynamoDBAdapter(dbDocument),
   debug: false,
 } satisfies NextAuthConfig;

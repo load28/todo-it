@@ -3,16 +3,17 @@ import { Todo } from '@/app/api/todo/route';
 import { utcDayjs } from '@/app/@core/utils/date';
 
 const TODOS_QUERY_KEY = 'todos';
-const todoQueryOptions = queryOptions({
-  queryKey: [TODOS_QUERY_KEY],
-  queryFn: async (): Promise<Todo[]> => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo`);
-    return await res.json();
-  },
-});
+const todoQueryOptions = (userId: string) =>
+  queryOptions({
+    queryKey: [TODOS_QUERY_KEY],
+    queryFn: async (): Promise<Todo[]> => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo?userId=${userId}`);
+      return await res.json();
+    },
+  });
 
-export const useTodoQuery = () => useSuspenseQuery(todoQueryOptions);
-export const todoQueryPrefetch = async (queryClient: QueryClient) => await queryClient.prefetchQuery(todoQueryOptions);
+export const useTodoQuery = (userId: string) => useSuspenseQuery(todoQueryOptions(userId));
+export const todoQueryPrefetch = async (queryClient: QueryClient, email: string) => await queryClient.prefetchQuery(todoQueryOptions(email));
 export const useTodoToggle = () => {
   const queryClient = useQueryClient();
   return useMutation({

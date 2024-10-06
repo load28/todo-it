@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { dbDocument } from '@/app/@core/db/dynamoDB';
 
 export interface Todo {
   id: string;
@@ -41,7 +42,15 @@ const TODOS: Todo[] = [
   },
 ];
 
-export async function GET() {
-  await new Promise((resolve) => setTimeout(resolve, 0));
-  return NextResponse.json(TODOS);
+export async function GET(req: NextRequest) {
+  const userId = req.nextUrl.searchParams.get('userId');
+  const result = await dbDocument.query({
+    TableName: 'todo',
+    KeyConditionExpression: 'sk = :sk',
+    ExpressionAttributeValues: {
+      ':sk': `USER#${userId}`,
+    },
+  });
+  
+  return NextResponse.json(result.Items);
 }

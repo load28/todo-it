@@ -6,10 +6,12 @@ import { Divider, Stack } from '@mantine/core';
 import React, { useMemo } from 'react';
 import { useTzContext } from '@/app/@core/providers/TimezoneProvider';
 import { todoToMap, useTodoQuery } from '@/app/@core/query/todo-query';
+import { useSessionQuery } from '@/app/@core/query/session-query';
 
 export function Todo() {
   const tzCtx = useTzContext();
-  const { data, isLoading } = useTodoQuery();
+  const session = useSessionQuery();
+  const { data, isLoading } = useTodoQuery(session.data.id);
   const todoMap = useMemo(() => todoToMap(tzCtx?.tz, data), [data, tzCtx?.tz]);
   const sortedDates = useMemo(() => sortDate(Object.keys(todoMap || {}), 'des'), [todoMap]);
 
