@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbDocument } from '@/app/@core/db/dynamoDB';
+import { GetCommand } from '@aws-sdk/lib-dynamodb';
 
 export interface Todo {
   id: string;
@@ -44,13 +45,15 @@ const TODOS: Todo[] = [
 
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get('userId');
-  const result = await dbDocument.query({
-    TableName: 'todo',
-    KeyConditionExpression: 'sk = :sk',
-    ExpressionAttributeValues: {
-      ':sk': `USER#${userId}`,
-    },
-  });
-  
-  return NextResponse.json(result.Items);
+  const { Item } = await dbDocument.send(
+    new GetCommand({
+      TableName: 'todo',
+      Key: { pk: `USER#${userId}`, sk: `USER#${userId}` },
+    }),
+  );
+  return NextResponse.json(Item || []);
+}
+
+export async function POST(req: Request) {
+  const data = req.json();
 }
