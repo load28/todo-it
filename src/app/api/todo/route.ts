@@ -1,59 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbDocument } from '@/app/@core/db/dynamoDB';
-import { GetCommand } from '@aws-sdk/lib-dynamodb';
+import { QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { z } from 'zod';
+import { BatchWriteItemCommand } from '@aws-sdk/client-dynamodb';
+import { v4 as uuidv4 } from 'uuid';
+import { marshall } from '@aws-sdk/util-dynamodb';
 
-export interface Todo {
-  id: string;
-  description: string;
-  date: string;
-  isComplete: boolean;
-}
-
-const TODOS: Todo[] = [
-  {
-    id: '1',
-    description:
-      'Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1Description 1zzzz',
-    date: '2024-07-07',
-    isComplete: true,
-  },
-  {
-    id: '2',
-    description: 'Description 2',
-    date: '2024-07-07',
-    isComplete: false,
-  },
-  {
-    id: '3',
-    description: 'Description 3',
-    date: '2024-07-07',
-    isComplete: false,
-  },
-  {
-    id: '4',
-    description: 'Description 4',
-    date: '2024-07-07',
-    isComplete: false,
-  },
-  {
-    id: '5',
-    description: 'Description 4',
-    date: '2024-07-13',
-    isComplete: false,
-  },
-];
+export const TodoSchema = z.object({
+  id: z.string().uuid(),
+  description: z.string().max(300).trim(),
+  date: z.string().date(),
+  isComplete: z.boolean(),
+});
+export type Todo = z.infer<typeof TodoSchema>;
 
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get('userId');
-  const { Item } = await dbDocument.send(
-    new GetCommand({
+  if (!userId) {
+    // todo invalidation error 정의
+    return NextResponse.json({ error: 'Not found user id' }, { status: 400 });
+  }
+
+  const { Items } = await dbDocument.send(
+    new QueryCommand({
       TableName: 'todo',
-      Key: { pk: `USER#${userId}`, sk: `USER#${userId}` },
+      IndexName: 'sk-index',
+      KeyConditionExpression: 'sk = :skValue',
+      ExpressionAttributeValues: {
+        ':skValue': `USER#${userId}`,
+      },
     }),
   );
-  return NextResponse.json(Item || []);
+  return NextResponse.json(Items || []);
 }
 
+const TodoPostParamsSchema = z.object({ userId: z.string(), data: z.array(TodoSchema.omit({ id: true })) });
+export type TodoPostParams = z.infer<typeof TodoPostParamsSchema>;
+
 export async function POST(req: Request) {
-  const data = req.json();
+  try {
+    const requestBody = req.json();
+    const { error, data } = TodoPostParamsSchema.safeParse(requestBody);
+    if (error) {
+      // todo invalidation error 정의
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    await dbDocument.send(
+      new BatchWriteItemCommand({
+        RequestItems: {
+          todo: data.data.map((todo) => ({
+            PutRequest: {
+              Item: marshall({ pk: `TODO#${uuidv4()}`, sk: `USER#${data.userId}`, ...todo }),
+            },
+          })),
+        },
+      }),
+    );
+    return NextResponse.json({ success: true });
+  } catch (error: unknown) {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
 }
