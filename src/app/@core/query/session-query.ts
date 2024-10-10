@@ -1,18 +1,12 @@
-import { QueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { auth } from '@/app/@core/auth/auth';
+import { QueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { z } from 'zod';
 
-export type TodoItSessionInfo = {
-  id: string;
-  email: string;
-  image: string;
-};
+const TodoItSessionInfoSchema = z.object({ id: z.string(), email: z.string().email(), image: z.string().url() });
+export type TodoItSessionInfo = z.infer<typeof TodoItSessionInfoSchema>;
 
 const SESSION_QUERY_KEY = 'session';
 const SESSION_QUERY_STALE_TIME = 1000 * 60 * 60 * 24;
-
-const sessionGuard = (session: any): session is TodoItSessionInfo => {
-  return session?.id && session?.email && session?.image;
-};
 
 export const useSessionQuery = () => {
   return useSuspenseQuery<TodoItSessionInfo>({
@@ -21,8 +15,9 @@ export const useSessionQuery = () => {
     queryFn: async (): Promise<TodoItSessionInfo> => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/session`);
-        const data = await response.json();
-        if (!sessionGuard(data.user)) {
+        const responseBody = await response.json();
+        const { error, data: user } = TodoItSessionInfoSchema.safeParse(responseBody.user);
+        if (error) {
           /**
            * TODO session 에러인 경우 상위의 바운더리에서 에러를 케치하여 에러 페이지로 이동시켜야함
            * 즉 해당 훅을 사용하는 곳에서는 세션이 주입되어 있는 곳에서만 사용할수있음
@@ -32,9 +27,9 @@ export const useSessionQuery = () => {
         }
 
         return {
-          id: data.user.id,
-          email: data.user.email,
-          image: data.user.image,
+          id: user.id,
+          email: user.email,
+          image: user.image,
         };
       } catch (error) {
         throw new Error('Unknown error');
@@ -50,14 +45,15 @@ export async function sessionQueryPrefetch(queryClient: QueryClient) {
     queryFn: async (): Promise<TodoItSessionInfo> => {
       try {
         const session = await auth();
-        if (!sessionGuard(session?.user)) {
+        const { error, data: user } = TodoItSessionInfoSchema.safeParse(session?.user);
+        if (error) {
           throw new Error('Invalid session');
         }
 
         return {
-          id: session.user.id,
-          image: session.user.image,
-          email: session.user.email,
+          id: user.id,
+          image: user.image,
+          email: user.email,
         };
       } catch (error) {
         throw new Error('Unknown error');
