@@ -29,7 +29,7 @@ export function Todo() {
         sortedDates.map((date) => {
           return (
             <Stack key={date} gap={18}>
-              <TodoList key={date} todos={todoMap[date]} date={date} />
+              <TodoList todos={todoMap[date]} date={date} />
               <Divider />
             </Stack>
           );
