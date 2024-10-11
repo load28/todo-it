@@ -19,14 +19,14 @@ export const SaveTodo = {
       />
     );
   },
-  Todos: ({ todos, setTodos }: { todos: string[]; setTodos: (value: string[]) => void }) => {
+  Todos: ({ todos, setTodos }: { todos: { data: string; createAt: number }[]; setTodos: (value: { data: string; createAt: number }[]) => void }) => {
     const changeHandler = (index: number, value: ChangeEvent<HTMLInputElement>) => {
       if (!value) {
         return;
       }
 
       const newTodos = [...todos];
-      newTodos[index] = `${value.target.value}`;
+      newTodos[index] = { ...newTodos[index], data: value.target.value };
       setTodos(newTodos);
     };
 
@@ -45,7 +45,7 @@ export const SaveTodo = {
     };
 
     const addHandler = () => {
-      setTodos([...todos, '']);
+      setTodos([...todos, { data: '', createAt: Date.now() }]);
     };
 
     return (
@@ -57,7 +57,7 @@ export const SaveTodo = {
           return (
             <Group gap={'sm'} key={index}>
               <Input.Wrapper flex={1}>
-                <Input value={todo} onChange={(value) => changeHandler(index, value)} data-autofocus={index === 0 || undefined} />
+                <Input value={todo.data} onChange={(value) => changeHandler(index, value)} data-autofocus={index === 0 || undefined} />
               </Input.Wrapper>
               <ActionIcon size={'sm'} color={'red.5'} variant={'subtle'} onClick={() => deleteHandler(index)}>
                 <IconSquareRoundedX />

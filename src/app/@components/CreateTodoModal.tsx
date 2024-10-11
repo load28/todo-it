@@ -5,20 +5,21 @@ import { useModalControlContext } from '@/app/@core/providers/ModalControl.conte
 import { Button, Modal, Stack } from '@mantine/core';
 import { useState } from 'react';
 import { useSaveTodoDataContext } from '@/app/@components/save-todo/SaveTodoData.context';
-import { TodoPostParams } from '@/app/api/todo/route';
+import { Todo, TodoPostParams, TodoPostResponse } from '@/app/api/todo/route';
 import { useSessionQuery } from '@/app/@core/query/session-query';
 import { utcDayjs } from '@/app/@core/utils/date';
-import { TODOS_QUERY_KEY } from '../@core/query/todo-query';
-import { useMutation } from '@tanstack/react-query';
+import { TodoMap, TODOS_QUERY_KEY } from '../@core/query/todo-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const CreateTodoModal = () => {
   const session = useSessionQuery();
+  const queryClient = useQueryClient();
   const ctx = useSaveTodoDataContext();
   const modalCtx = useModalControlContext();
   const createTodoMutation = useMutation({
     mutationKey: [TODOS_QUERY_KEY],
     mutationFn: async (todoParam: TodoPostParams) => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo`, {
+      const responseBody = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,16 +27,27 @@ export const CreateTodoModal = () => {
         body: JSON.stringify(todoParam),
       });
 
-      if (response.status !== 200) {
+      const responseData: TodoPostResponse = await responseBody.json();
+      if (responseData.isError) {
+        // todo error handling
         throw new Error('Failed to create todo');
       }
 
+      return { date: todoParam.date, todos: responseData.data };
+    },
+    onSuccess: ({ date, todos }: { date: string; todos: Todo[] }) => {
+      const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
+      if (!todoMap) return;
+
+      queryClient.setQueryData([TODOS_QUERY_KEY], {
+        ...todoMap,
+        [date]: todos,
+      });
+
       modalCtx?.close();
-      // TODO 서버 반환값을 넘김
-      return todoParam;
     },
   });
-  const [descriptions, setDescriptions] = useState<string[]>(Array.from({ length: 4 }, () => ''));
+  const [descriptions, setDescriptions] = useState<{ data: string; createAt: number }[]>([{ data: '', createAt: Date.now() }]);
 
   const submitHandler = async () => {
     const date = ctx?.date;
@@ -46,7 +58,9 @@ export const CreateTodoModal = () => {
     const todoParam: TodoPostParams = {
       userId: session.data.id,
       date: utcDayjs(date).format('YYYY-MM-DD'),
-      data: descriptions.filter((description) => !!description).map((description) => ({ description: description.trim(), isComplete: false })),
+      data: descriptions
+        .filter((description) => !!description)
+        .map((description, index) => ({ description: description.data.trim(), isComplete: false, createdAt: description.createAt })),
     };
     createTodoMutation.mutate(todoParam);
   };
@@ -72,7 +86,7 @@ export const CreateTodoModal = () => {
               <SaveTodo.Todos todos={descriptions} setTodos={setDescriptions} />
             </Stack>
             <Button mt={'md'} color="blue.5" onClick={submitHandler}>
-              Add
+              {createTodoMutation.isPending ? 'Adding...' : 'Add'}
             </Button>
           </Stack>
         </Modal>

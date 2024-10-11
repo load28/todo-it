@@ -1,11 +1,10 @@
 import { QueryClient, queryOptions, useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { Todo } from '@/app/api/todo/route';
 import { utcDayjs } from '@/app/@core/utils/date';
-import { todo } from 'node:test';
 
 export const TODOS_QUERY_KEY = 'todos';
 export type TodoMap = Record<string, Todo[] | undefined>;
-const todoQueryOptions = (userId: string) =>
+const todoMapQueryOptions = (userId: string) =>
   queryOptions({
     queryKey: [TODOS_QUERY_KEY],
     queryFn: async (): Promise<TodoMap> => {
@@ -15,8 +14,8 @@ const todoQueryOptions = (userId: string) =>
     },
   });
 
-export const useTodoQuery = (userId: string) => useSuspenseQuery(todoQueryOptions(userId));
-export const todoQueryPrefetch = async (queryClient: QueryClient, userId: string) => await queryClient.prefetchQuery(todoQueryOptions(userId));
+export const useTodoMapQuery = (userId: string) => useSuspenseQuery(todoMapQueryOptions(userId));
+export const todoMapQueryPrefetch = async (queryClient: QueryClient, userId: string) => await queryClient.prefetchQuery(todoMapQueryOptions(userId));
 
 export const todoToMap = (todos?: Todo[]) => {
   return (

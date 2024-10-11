@@ -4,12 +4,12 @@ import { TodoList } from '@/app/(with_frame)/main/TodoList';
 import { sortDate } from '@/app/@core/utils/date';
 import { Divider, Stack } from '@mantine/core';
 import React, { useMemo } from 'react';
-import { useTodoQuery } from '@/app/@core/query/todo-query';
+import { useTodoMapQuery } from '@/app/@core/query/todo-query';
 import { useSessionQuery } from '@/app/@core/query/session-query';
 
 export function Todo() {
   const session = useSessionQuery();
-  const { data: todoMap, isLoading } = useTodoQuery(session.data.id);
+  const { data: todoMap, isLoading } = useTodoMapQuery(session.data.id);
   const sortedDates = useMemo(() => sortDate(Object.keys(todoMap || {}), 'des'), [todoMap]);
 
   if (isLoading) {
@@ -24,9 +24,12 @@ export function Todo() {
     <Stack gap={32}>
       {todoMap &&
         sortedDates.map((date) => {
+          const todos = todoMap[date]?.sort((a, b) => a.createdAt - b.createdAt);
+          if (!todos) return null;
+
           return (
             <Stack key={date} gap={18}>
-              <TodoList todos={todoMap[date]} date={date} />
+              <TodoList todos={todos} date={date} />
               <Divider />
             </Stack>
           );

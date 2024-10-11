@@ -1,5 +1,5 @@
 import { Todo } from '@/app/(with_frame)/main/Todo';
-import { todoQueryPrefetch } from '@/app/@core/query/todo-query';
+import { todoMapQueryPrefetch } from '@/app/@core/query/todo-query';
 import { getQueryClient } from '@/app/@core/providers/query/query-utils';
 import { HydrationBoundary } from '@tanstack/react-query';
 import { dehydrate } from '@tanstack/query-core';
@@ -13,7 +13,7 @@ export default async function Page() {
     return null;
   }
 
-  await todoQueryPrefetch(queryClient, session.user.id);
+  await todoMapQueryPrefetch(queryClient, session.user.id);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

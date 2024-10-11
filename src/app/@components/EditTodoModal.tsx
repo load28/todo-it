@@ -9,11 +9,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TodoMap, TODOS_QUERY_KEY } from '@/app/@core/query/todo-query';
 import { Todo } from '@/app/api/todo/route';
 
-export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: string[] }>) {
+export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: { data: string; createAt: number }[] }>) {
   const queryClient = useQueryClient();
   const ctx = useSaveTodoDataContext();
   const modalCtx = useModalControlContext();
-  const [cacheTodos, setCacheTodos] = useState<string[]>(todos);
+  const [cacheTodos, setCacheTodos] = useState<{ data: string; createAt: number }[]>(todos);
 
   const updateTodoMutaion = useMutation({
     mutationKey: [TODOS_QUERY_KEY],
