@@ -8,16 +8,37 @@ import { useSaveTodoDataContext } from '@/app/@components/save-todo/SaveTodoData
 import { TodoPostParams } from '@/app/api/todo/route';
 import { useSessionQuery } from '@/app/@core/query/session-query';
 import { utcDayjs } from '@/app/@core/utils/date';
+import { TODOS_QUERY_KEY } from '../@core/query/todo-query';
+import { useMutation } from '@tanstack/react-query';
 
 export const CreateTodoModal = () => {
   const session = useSessionQuery();
   const ctx = useSaveTodoDataContext();
   const modalCtx = useModalControlContext();
+  const createTodoMutation = useMutation({
+    mutationKey: [TODOS_QUERY_KEY],
+    mutationFn: async (todoParam: TodoPostParams) => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(todoParam),
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Failed to create todo');
+      }
+
+      modalCtx?.close();
+      // TODO 서버 반환값을 넘김
+      return todoParam;
+    },
+  });
   const [descriptions, setDescriptions] = useState<string[]>(Array.from({ length: 4 }, () => ''));
 
   const submitHandler = async () => {
     const date = ctx?.date;
-
     if (!(date && modalCtx)) {
       return;
     }
@@ -27,20 +48,7 @@ export const CreateTodoModal = () => {
       date: utcDayjs(date).format('YYYY-MM-DD'),
       data: descriptions.filter((description) => !!description).map((description) => ({ description: description.trim(), isComplete: false })),
     };
-
-    // TODO 로딩 처리 필요 form action을 넣어서 로딩 추가, react query를 이용한 뮤테이션 추가
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(todoParam),
-    });
-
-    // TODO 에러케이스 인 경우 에러 팝업을 띄우도록 유도
-    if (response.status !== 200) {
-    }
-    modalCtx.close();
+    createTodoMutation.mutate(todoParam);
   };
 
   return (

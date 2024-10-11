@@ -1,30 +1,22 @@
 import { QueryClient, queryOptions, useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { Todo } from '@/app/api/todo/route';
 import { utcDayjs } from '@/app/@core/utils/date';
+import { todo } from 'node:test';
 
-const TODOS_QUERY_KEY = 'todos';
+export const TODOS_QUERY_KEY = 'todos';
+export type TodoMap = Record<string, Todo[] | undefined>;
 const todoQueryOptions = (userId: string) =>
   queryOptions({
     queryKey: [TODOS_QUERY_KEY],
-    queryFn: async (): Promise<Todo[]> => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo?userId=${userId}`);
-      return await res.json();
+    queryFn: async (): Promise<TodoMap> => {
+      const responseBody = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo?userId=${userId}`);
+      const data = await responseBody.json();
+      return todoToMap(data);
     },
   });
 
 export const useTodoQuery = (userId: string) => useSuspenseQuery(todoQueryOptions(userId));
 export const todoQueryPrefetch = async (queryClient: QueryClient, userId: string) => await queryClient.prefetchQuery(todoQueryOptions(userId));
-export const useTodoToggle = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationKey: [TODOS_QUERY_KEY],
-    mutationFn: async (id: string): Promise<Todo[]> => {
-      const todos = queryClient.getQueryData<Todo[]>([TODOS_QUERY_KEY]);
-      return todos?.map((todo) => (todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo)) || [];
-    },
-    onSuccess: (todos: Todo[]) => queryClient.setQueryData([TODOS_QUERY_KEY], todos),
-  });
-};
 
 export const todoToMap = (todos?: Todo[]) => {
   return (

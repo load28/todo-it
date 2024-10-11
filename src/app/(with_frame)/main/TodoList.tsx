@@ -8,13 +8,28 @@ import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
 import React, { ChangeEvent, PropsWithChildren } from 'react';
-import { useTodoToggle } from '@/app/@core/query/todo-query';
+import { TodoMap, TODOS_QUERY_KEY } from '@/app/@core/query/todo-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; date: string }>) {
+  const queryClient = useQueryClient();
   const [opened, { open, close }] = useDisclosure(false);
-  const todoMutation = useTodoToggle();
+  const todoMutation = useMutation({
+    mutationKey: [TODOS_QUERY_KEY],
+    mutationFn: async ({ id, date }: { id: string; date: string }): Promise<TodoMap | undefined> => {
+      const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
+      if (!todoMap) return todoMap;
 
-  const checkboxHandler = (e: ChangeEvent<HTMLInputElement>) => todoMutation.mutate(e.target.id);
+      const newTodoMap = { ...todoMap };
+      const targetTodos = newTodoMap?.[date] || [];
+      const newTodos = targetTodos.map((todo) => (todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo));
+      newTodoMap[date] = newTodos;
+      return newTodoMap;
+    },
+    onSuccess: (todoMap: TodoMap | undefined) => queryClient.setQueryData([TODOS_QUERY_KEY], todoMap),
+  });
+
+  const checkboxHandler = (e: ChangeEvent<HTMLInputElement>) => todoMutation.mutate({ id: e.target.id, date });
   const editHandler = () => open();
 
   return (

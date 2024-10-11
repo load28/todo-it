@@ -4,13 +4,12 @@ import { TodoList } from '@/app/(with_frame)/main/TodoList';
 import { sortDate } from '@/app/@core/utils/date';
 import { Divider, Stack } from '@mantine/core';
 import React, { useMemo } from 'react';
-import { todoToMap, useTodoQuery } from '@/app/@core/query/todo-query';
+import { useTodoQuery } from '@/app/@core/query/todo-query';
 import { useSessionQuery } from '@/app/@core/query/session-query';
 
 export function Todo() {
   const session = useSessionQuery();
-  const { data, isLoading } = useTodoQuery(session.data.id);
-  const todoMap = useMemo(() => todoToMap(data), [data]);
+  const { data: todoMap, isLoading } = useTodoQuery(session.data.id);
   const sortedDates = useMemo(() => sortDate(Object.keys(todoMap || {}), 'des'), [todoMap]);
 
   if (isLoading) {
