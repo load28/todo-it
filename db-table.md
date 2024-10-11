@@ -4,17 +4,18 @@
 aws dynamodb create-table \
     --table-name todo \
     --attribute-definitions \
-        AttributeName=pk,AttributeType=S \
-        AttributeName=sk,AttributeType=S \
+        AttributeName=id,AttributeType=S \
+        AttributeName=date,AttributeType=S \
+        AttributeName=userId,AttributeType=S \
     --key-schema \
-        AttributeName=pk,KeyType=HASH \
-        AttributeName=sk,KeyType=RANGE \
+        AttributeName=id,KeyType=HASH \
+        AttributeName=date,KeyType=RANGE \
     --global-secondary-indexes \
         "[
             {
-                \"IndexName\": \"pk-index\",
+                \"IndexName\": \"userId-index\",
                 \"KeySchema\": [{
-                    \"AttributeName\": \"pk\",
+                    \"AttributeName\": \"userId\",
                     \"KeyType\": \"HASH\"
                 }],
                 \"Projection\": {
@@ -26,11 +27,11 @@ aws dynamodb create-table \
                 }
             },
             {
-                \"IndexName\": \"sk-index\",
-                \"KeySchema\": [{
-                    \"AttributeName\": \"sk\",
-                    \"KeyType\": \"HASH\"
-                }],
+                \"IndexName\": \"userId-date-index\",
+                \"KeySchema\": [
+                    {\"AttributeName\": \"userId\", \"KeyType\": \"HASH\"},
+                    {\"AttributeName\": \"date\", \"KeyType\": \"RANGE\"}
+                ],
                 \"Projection\": {
                     \"ProjectionType\": \"ALL\"
                 },
@@ -42,5 +43,5 @@ aws dynamodb create-table \
         ]" \
     --provisioned-throughput \
         ReadCapacityUnits=5,WriteCapacityUnits=5 \
-    --endpoint-url http://localhost:8000 
+    --endpoint-url http://localhost:8000
 ```

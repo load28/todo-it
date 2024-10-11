@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useSaveTodoDataContext } from '@/app/@components/save-todo/SaveTodoData.context';
 import { TodoPostParams } from '@/app/api/todo/route';
 import { useSessionQuery } from '@/app/@core/query/session-query';
-import dayjs from 'dayjs';
+import { utcDayjs } from '@/app/@core/utils/date';
 
 export const CreateTodoModal = () => {
   const session = useSessionQuery();
@@ -17,17 +17,18 @@ export const CreateTodoModal = () => {
 
   const submitHandler = async () => {
     const date = ctx?.date;
-    if (!date || !modalCtx) {
+
+    if (!(date && modalCtx)) {
       return;
     }
 
     const todoParam: TodoPostParams = {
       userId: session.data.id,
-      date: dayjs(date).format('YYYY-MM-DD'),
+      date: utcDayjs(date).format('YYYY-MM-DD'),
       data: descriptions.filter((description) => !!description).map((description) => ({ description: description.trim(), isComplete: false })),
     };
 
-    // TODO 로딩 처리 필요 form action을 넣어서 로딩 추가
+    // TODO 로딩 처리 필요 form action을 넣어서 로딩 추가, react query를 이용한 뮤테이션 추가
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo`, {
       method: 'POST',
       headers: {

@@ -6,9 +6,14 @@ import { BatchWriteItemCommand } from '@aws-sdk/client-dynamodb';
 import { marshall } from '@aws-sdk/util-dynamodb';
 import { v4 } from 'uuid';
 
+export const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+const DateStringSchema = z.string().regex(dateRegex, {
+  message: "Invalid date format. Expected 'YYYY-MM-DD'.",
+});
+
 export const TodoSchema = z.object({
-  id: z.string(), // todo pk가 아닌 id로 변경
-  date: z.string().date(), // todo sk가 아닌 date로 변경
+  id: z.string(),
+  date: DateStringSchema,
   description: z.string().max(300),
   isComplete: z.boolean(),
 });
@@ -24,10 +29,10 @@ export async function GET(req: NextRequest) {
   const { Items } = await dbDocument.send(
     new QueryCommand({
       TableName: 'todo',
-      IndexName: 'pk-index',
-      KeyConditionExpression: 'pk = :pkValue',
+      IndexName: 'userId-index',
+      KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeValues: {
-        ':pkValue': `USER#${userId}`,
+        ':userId': userId,
       },
     }),
   );
@@ -37,7 +42,7 @@ export async function GET(req: NextRequest) {
     Items?.map((item) => {
       return {
         id: item.id,
-        date: item.sk.split('#')[1],
+        date: item.date,
         description: item.description,
         isComplete: item.isComplete,
       };
@@ -46,25 +51,25 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(responseData);
 }
 
-const TodoPostParamsSchema = z.object({ userId: z.string(), date: z.string().date(), data: z.array(TodoSchema.omit({ id: true, date: true })) });
+const TodoPostParamsSchema = z.object({ userId: z.string(), date: DateStringSchema, data: z.array(TodoSchema.omit({ id: true, date: true })) });
 export type TodoPostParams = z.infer<typeof TodoPostParamsSchema>;
 
 export async function POST(req: Request) {
   try {
     const requestBody = await req.json();
-    const { error, data } = TodoPostParamsSchema.safeParse(requestBody);
-    if (error) {
+    const parsedData = TodoPostParamsSchema.safeParse(requestBody);
+    if (parsedData.error) {
       // todo invalidation error 정의
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      return NextResponse.json({ error: parsedData.error.message }, { status: 400 });
     }
 
-    // TODO 타입을 추론하는게 명확지 않음 -> 하나의 함수를 통해 핸들링하여 타입을 명확히 알수있도록 변경필요
+    const { userId, date, data } = parsedData.data;
     await dbDocument.send(
       new BatchWriteItemCommand({
         RequestItems: {
-          todo: data.data.map((todo) => ({
+          todo: data.map((todo) => ({
             PutRequest: {
-              Item: marshall({ pk: `USER#${data.userId}`, sk: `DATE#${data.date}`, id: v4(), ...todo }),
+              Item: marshall({ id: v4(), date, userId, ...todo }),
             },
           })),
         },

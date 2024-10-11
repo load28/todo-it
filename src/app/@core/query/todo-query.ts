@@ -26,10 +26,10 @@ export const useTodoToggle = () => {
   });
 };
 
-export const todoToMap = (tz?: string, todos?: Todo[]) => {
+export const todoToMap = (todos?: Todo[]) => {
   return (
     todos?.reduce<Record<string, Todo[]>>((acc, todo) => {
-      const tzDate = utcDayjs(todo.date).tz(tz).format('YYYY-MM-DD');
+      const tzDate = utcDayjs(todo.date).format('YYYY-MM-DD');
       return {
         ...acc,
         [tzDate]: [...(acc[tzDate] || []), todo],

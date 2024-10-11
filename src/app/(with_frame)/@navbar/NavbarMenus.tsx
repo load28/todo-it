@@ -3,13 +3,10 @@
 import Link from 'next/link';
 import classes from '@/app/(with_frame)/@navbar/Navbar.module.css';
 import React from 'react';
-import { IconList, IconSettings } from '@tabler/icons-react';
+import { IconList } from '@tabler/icons-react';
 import { usePathname } from 'next/navigation';
 
-const data = [
-  { link: '/main', label: 'Todo', icon: IconList },
-  { link: '/settings', label: 'Settings', icon: IconSettings },
-];
+const data = [{ link: '/main', label: 'Todo', icon: IconList }];
 
 export default function NavbarMenus() {
   const currentPath = usePathname();
