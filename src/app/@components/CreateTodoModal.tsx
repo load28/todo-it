@@ -55,7 +55,7 @@ export const CreateTodoModal = () => {
       date: utcDayjs(date).format('YYYY-MM-DD'),
       data: descriptions
         .filter((description) => !!description)
-        .map((description, index) => ({ description: description.data.trim(), isComplete: false, createdAt: description.createAt })),
+        .map((description) => ({ description: description.data.trim(), isComplete: false, createdAt: description.createAt })),
     };
     createTodoMutation.mutate(todoParam);
   };
