@@ -13,7 +13,7 @@ const todoQueryOptions = (userId: string) =>
   });
 
 export const useTodoQuery = (userId: string) => useSuspenseQuery(todoQueryOptions(userId));
-export const todoQueryPrefetch = async (queryClient: QueryClient, email: string) => await queryClient.prefetchQuery(todoQueryOptions(email));
+export const todoQueryPrefetch = async (queryClient: QueryClient, userId: string) => await queryClient.prefetchQuery(todoQueryOptions(userId));
 export const useTodoToggle = () => {
   const queryClient = useQueryClient();
   return useMutation({
