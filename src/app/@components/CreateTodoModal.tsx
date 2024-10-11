@@ -16,6 +16,7 @@ export const CreateTodoModal = () => {
   const queryClient = useQueryClient();
   const ctx = useSaveTodoDataContext();
   const modalCtx = useModalControlContext();
+  const [descriptions, setDescriptions] = useState<{ data: string; createAt: number }[]>([{ data: '', createAt: Date.now() }]);
   const createTodoMutation = useMutation({
     mutationKey: [TODOS_QUERY_KEY],
     mutationFn: async (todoParam: TodoPostParams) => {
@@ -42,7 +43,6 @@ export const CreateTodoModal = () => {
       modalCtx?.close();
     },
   });
-  const [descriptions, setDescriptions] = useState<{ data: string; createAt: number }[]>([{ data: '', createAt: Date.now() }]);
 
   const submitHandler = async () => {
     const date = ctx?.date;
