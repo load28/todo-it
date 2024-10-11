@@ -55,15 +55,14 @@ export async function GET(req: NextRequest) {
 
 const TodoPostParamsSchema = z.object({ userId: z.string(), date: DateStringSchema, data: z.array(TodoSchema.omit({ id: true, date: true })) });
 export type TodoPostParams = z.infer<typeof TodoPostParamsSchema>;
-export type TodoPostResponse = { isError: false; data: Todo[] } | { isError: true; error: string };
 
-export async function POST(req: Request): Promise<NextResponse<TodoPostResponse>> {
+export async function POST(req: Request) {
   try {
     const requestBody = await req.json();
     const parsedData = TodoPostParamsSchema.safeParse(requestBody);
     if (parsedData.error) {
       // todo invalidation error 정의
-      return NextResponse.json({ isError: true, error: parsedData.error.message }, { status: 400 });
+      return NextResponse.json({ error: parsedData.error.message }, { status: 400 });
     }
 
     const { userId, date, data } = parsedData.data;
@@ -79,8 +78,8 @@ export async function POST(req: Request): Promise<NextResponse<TodoPostResponse>
         },
       }),
     );
-    return NextResponse.json({ isError: false, data: dataset });
+    return NextResponse.json(dataset);
   } catch (error: unknown) {
-    return NextResponse.json({ isError: true, error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

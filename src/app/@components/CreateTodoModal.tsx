@@ -5,7 +5,7 @@ import { useModalControlContext } from '@/app/@core/providers/ModalControl.conte
 import { Button, Modal, Stack } from '@mantine/core';
 import { useState } from 'react';
 import { useSaveTodoDataContext } from '@/app/@components/save-todo/SaveTodoData.context';
-import { Todo, TodoPostParams, TodoPostResponse } from '@/app/api/todo/route';
+import { Todo, TodoPostParams } from '@/app/api/todo/route';
 import { useSessionQuery } from '@/app/@core/query/session-query';
 import { utcDayjs } from '@/app/@core/utils/date';
 import { TodoMap, TODOS_QUERY_KEY } from '../@core/query/todo-query';
@@ -27,13 +27,8 @@ export const CreateTodoModal = () => {
         body: JSON.stringify(todoParam),
       });
 
-      const responseData: TodoPostResponse = await responseBody.json();
-      if (responseData.isError) {
-        // todo error handling
-        throw new Error('Failed to create todo');
-      }
-
-      return { date: todoParam.date, todos: responseData.data };
+      const responseData = await responseBody.json();
+      return { date: todoParam.date, todos: responseData };
     },
     onSuccess: ({ date, todos }: { date: string; todos: Todo[] }) => {
       const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
