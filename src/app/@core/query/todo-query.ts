@@ -1,4 +1,4 @@
-import { QueryClient, queryOptions, useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { QueryClient, queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { Todo } from '@/app/api/todo/route';
 import { utcDayjs } from '@/app/@core/utils/date';
 
@@ -20,10 +20,10 @@ export const todoMapQueryPrefetch = async (queryClient: QueryClient, userId: str
 export const todoToMap = (todos?: Todo[]) => {
   return (
     todos?.reduce<Record<string, Todo[]>>((acc, todo) => {
-      const tzDate = utcDayjs(todo.date).format('YYYY-MM-DD');
+      const date = utcDayjs(todo.date).format('YYYY-MM-DD');
       return {
         ...acc,
-        [tzDate]: [...(acc[tzDate] || []), todo],
+        [date]: [...(acc[date] || []), todo],
       };
     }, {}) || {}
   );
