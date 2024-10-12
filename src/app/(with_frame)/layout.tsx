@@ -6,7 +6,7 @@ import { sessionQueryPrefetch } from '@/app/@core/query/session-query';
 import { HydrationBoundary } from '@tanstack/react-query';
 import { dehydrate } from '@tanstack/query-core';
 
-export default async function layout({ children }: PropsWithChildren) {
+export default async function layout({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
   await sessionQueryPrefetch(queryClient);
 
