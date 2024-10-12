@@ -3,12 +3,12 @@
 import { Avatar, Divider, Group, Menu, Text, UnstyledButton } from '@mantine/core';
 import { IconLogout } from '@tabler/icons-react';
 import React from 'react';
-import { googleSignOut } from '@/app/@core/auth/auth-action';
-import { useSessionQuery } from '@/app/@core/query/session-query';
+import { googleSignOut } from '@/core/auth/auth-action';
+import { useSessionQuery } from '@/core/query/session-query';
 
 export default function NavbarBottom() {
   const { data: session } = useSessionQuery();
-  
+
   const singOutHandler = async () => await googleSignOut();
 
   if (!session) {

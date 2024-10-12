@@ -1,4 +1,4 @@
-import { auth } from '@/app/@core/auth/auth';
+import { auth } from '@/core/auth/auth';
 import { QueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 

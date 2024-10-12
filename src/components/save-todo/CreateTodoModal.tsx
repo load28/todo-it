@@ -1,22 +1,27 @@
 'use client';
 
-import { SaveTodo } from '@/app/@components/save-todo/SaveTodo';
-import { useModalControlContext } from '@/app/@core/providers/ModalControl.context';
+import { SaveTodo } from '@/components/save-todo/SaveTodo';
+import { useModalControlContext } from '@/core/providers/ModalControl.context';
 import { Button, Modal, Stack } from '@mantine/core';
 import { useState } from 'react';
-import { useSaveTodoDataContext } from '@/app/@components/save-todo/SaveTodoData.context';
-import { Todo, TodoPostParams } from '@/app/api/todo/route';
-import { useSessionQuery } from '@/app/@core/query/session-query';
-import { utcDayjs } from '@/app/@core/utils/date';
-import { TodoMap, TODOS_QUERY_KEY } from '../@core/query/todo-query';
+import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.context';
+import { useSessionQuery } from '@/core/query/session-query';
+import { utcDayjs } from '@/core/utils/date';
+import { TodoMap, TODOS_QUERY_KEY } from '@/core/query/todo-query';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Todo, TodoPostParams } from '@/api/todo';
 
 export const CreateTodoModal = () => {
   const session = useSessionQuery();
   const queryClient = useQueryClient();
   const ctx = useSaveTodoDataContext();
   const modalCtx = useModalControlContext();
-  const [descriptions, setDescriptions] = useState<{ data: string; createAt: number }[]>([{ data: '', createAt: Date.now() }]);
+  const [descriptions, setDescriptions] = useState<{ data: string; createAt: number }[]>([
+    {
+      data: '',
+      createAt: Date.now(),
+    },
+  ]);
   const createTodoMutation = useMutation({
     mutationKey: [TODOS_QUERY_KEY],
     mutationFn: async (todoParam: TodoPostParams) => {
@@ -51,11 +56,16 @@ export const CreateTodoModal = () => {
     }
 
     const todoParam: TodoPostParams = {
+      mode: 'create',
       userId: session.data.id,
       date: utcDayjs(date).format('YYYY-MM-DD'),
       data: descriptions
         .filter((description) => !!description)
-        .map((description) => ({ description: description.data.trim(), isComplete: false, createdAt: description.createAt })),
+        .map((description) => ({
+          description: description.data.trim(),
+          isComplete: false,
+          createdAt: description.createAt,
+        })),
     };
     createTodoMutation.mutate(todoParam);
   };

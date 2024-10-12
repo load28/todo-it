@@ -1,7 +1,7 @@
 'use client';
 
-import { SaveTodoModal } from '@/app/@components/SaveTodoModal';
-import { ModalControlProvider } from '@/app/@core/providers/ModalControl.context';
+import { SaveTodoModal } from '@/components/save-todo/SaveTodoModal';
+import { ModalControlProvider } from '@/core/providers/ModalControl.context';
 import { ActionIcon, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconSquareRoundedPlus } from '@tabler/icons-react';

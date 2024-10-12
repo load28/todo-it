@@ -1,10 +1,9 @@
-import { PropsWithChildren } from 'react';
 import { Stack } from '@mantine/core';
-import Navbar from '@/app/(with_frame)/@navbar/Navbar';
-import { getQueryClient } from '@/app/@core/providers/query/query-utils';
-import { sessionQueryPrefetch } from '@/app/@core/query/session-query';
+import { getQueryClient } from '@/core/providers/query/query-utils';
+import { sessionQueryPrefetch } from '@/core/query/session-query';
 import { HydrationBoundary } from '@tanstack/react-query';
 import { dehydrate } from '@tanstack/query-core';
+import Navbar from '@/components/navbar/Navbar';
 
 export default async function layout({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();

@@ -1,11 +1,11 @@
 'use client';
 
 import { TodoList } from '@/app/(with_frame)/main/TodoList';
-import { sortDate } from '@/app/@core/utils/date';
+import { sortDate } from '@/core/utils/date';
 import { Divider, Stack } from '@mantine/core';
 import React, { useMemo } from 'react';
-import { useTodoMapQuery } from '@/app/@core/query/todo-query';
-import { useSessionQuery } from '@/app/@core/query/session-query';
+import { useTodoMapQuery } from '@/core/query/todo-query';
+import { useSessionQuery } from '@/core/query/session-query';
 
 export function Todo() {
   const session = useSessionQuery();

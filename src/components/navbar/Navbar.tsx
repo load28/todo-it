@@ -1,9 +1,9 @@
-import { NavbarHeader } from '@/app/(with_frame)/@navbar/NavbarHeader';
+import { NavbarHeader } from '@/components/navbar/NavbarHeader';
 import { Group, Stack } from '@mantine/core';
 import React from 'react';
 import classes from './Navbar.module.css';
-import NavbarBottom from '@/app/(with_frame)/@navbar/NavbarBottom';
-import NavbarMenus from '@/app/(with_frame)/@navbar/NavbarMenus';
+import NavbarBottom from '@/components/navbar/NavbarBottom';
+import NavbarMenus from '@/components/navbar/NavbarMenus';
 
 export default function Navbar() {
   return (

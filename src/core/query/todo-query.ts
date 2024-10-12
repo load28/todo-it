@@ -1,6 +1,6 @@
 import { QueryClient, queryOptions, useSuspenseQuery } from '@tanstack/react-query';
-import { Todo } from '@/app/api/todo/route';
-import { utcDayjs } from '@/app/@core/utils/date';
+import { utcDayjs } from '@/core/utils/date';
+import { Todo } from '@/api/todo';
 
 export const TODOS_QUERY_KEY = 'todos';
 export type TodoMap = Record<string, Todo[] | undefined>;

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import classes from '@/app/(with_frame)/@navbar/Navbar.module.css';
+import classes from '@/components/navbar/Navbar.module.css';
 import React from 'react';
 import { IconList } from '@tabler/icons-react';
 import { usePathname } from 'next/navigation';

@@ -1,7 +1,7 @@
 import { NextAuthConfig } from 'next-auth';
 import Google from '@auth/core/providers/google';
 import { DynamoDBAdapter } from '@auth/dynamodb-adapter';
-import { dbDocument } from '@/app/@core/db/dynamoDB';
+import { dbDocument } from '@/core/db/dynamoDB';
 
 export const authConfig = {
   providers: [

@@ -1,13 +1,14 @@
 'use client';
 
-import { SaveTodo } from '@/app/@components/save-todo/SaveTodo';
-import { useModalControlContext } from '@/app/@core/providers/ModalControl.context';
+import { SaveTodo } from '@/components/save-todo/SaveTodo';
+import { useModalControlContext } from '@/core/providers/ModalControl.context';
 import { Button, Modal, Stack } from '@mantine/core';
-import { useSaveTodoDataContext } from '@/app/@components/save-todo/SaveTodoData.context';
+import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.context';
 import { PropsWithoutRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TodoMap, TODOS_QUERY_KEY } from '@/app/@core/query/todo-query';
-import { Todo } from '@/app/api/todo/route';
+import { TodoMap, TODOS_QUERY_KEY } from '@/core/query/todo-query';
+
+import { Todo } from '@/api/todo';
 
 export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: { data: string; createAt: number }[] }>) {
   const queryClient = useQueryClient();

@@ -2,7 +2,7 @@
 
 import { Button, Stack, Text } from '@mantine/core';
 import React from 'react';
-import { googleLogin } from '@/app/@core/auth/auth-action';
+import { googleLogin } from '@/core/auth/auth-action';
 
 export default function LoginPage() {
   const login = async () => await googleLogin();
