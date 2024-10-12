@@ -2,9 +2,10 @@ import { ActionIcon, Group, Input, Stack, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { ChangeEvent } from 'react';
 import { IconSquareRoundedPlus, IconSquareRoundedX } from '@tabler/icons-react';
+import { Todo } from '@/api/todo';
 
 export const SaveTodo = {
-  Date: ({ date, setDate }: { date: Date | null; setDate: (date: Date | null) => void }) => {
+  Date: ({ date, setDate }: { date: Date; setDate: (date: Date | null) => void }) => {
     return (
       <DatePickerInput
         label={
@@ -19,14 +20,14 @@ export const SaveTodo = {
       />
     );
   },
-  Todos: ({ todos, setTodos }: { todos: { data: string; createAt: number }[]; setTodos: (value: { data: string; createAt: number }[]) => void }) => {
+  Todos: ({ date, todos, setTodos }: { date: string; todos: Todo[]; setTodos: (value: Todo[]) => void }) => {
     const changeHandler = (index: number, value: ChangeEvent<HTMLInputElement>) => {
       if (!value) {
         return;
       }
 
       const newTodos = [...todos];
-      newTodos[index] = { ...newTodos[index], data: value.target.value };
+      newTodos[index] = { ...newTodos[index], description: value.target.value };
       setTodos(newTodos);
     };
 
@@ -45,7 +46,7 @@ export const SaveTodo = {
     };
 
     const addHandler = () => {
-      setTodos([...todos, { data: '', createAt: Date.now() }]);
+      setTodos([...todos, { id: '', date, description: '', isComplete: false, createdAt: Date.now() }]);
     };
 
     return (
@@ -57,7 +58,11 @@ export const SaveTodo = {
           return (
             <Group gap={'sm'} key={index}>
               <Input.Wrapper flex={1}>
-                <Input value={todo.data} onChange={(value) => changeHandler(index, value)} data-autofocus={index === 0 || undefined} />
+                <Input
+                  value={todo.description}
+                  onChange={(value) => changeHandler(index, value)}
+                  data-autofocus={index === 0 || undefined}
+                />
               </Input.Wrapper>
               <ActionIcon size={'sm'} color={'red.5'} variant={'subtle'} onClick={() => deleteHandler(index)}>
                 <IconSquareRoundedX />

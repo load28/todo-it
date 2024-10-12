@@ -5,61 +5,65 @@ import { useModalControlContext } from '@/core/providers/ModalControl.context';
 import { Button, Modal, Stack } from '@mantine/core';
 import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.context';
 import { PropsWithoutRef, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { TodoMap, TODOS_QUERY_KEY } from '@/core/query/todo-query';
+import { todoDateFormatter, Todo, TodoPostParams } from '@/api/todo';
+import { getQueryClient } from '@/core/providers/query/query-utils';
+import { useSessionQuery } from '@/core/query/session-query';
 
-import { Todo } from '@/api/todo';
-
-export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: { data: string; createAt: number }[] }>) {
-  const queryClient = useQueryClient();
+export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
+  const session = useSessionQuery();
+  const queryClient = getQueryClient();
   const ctx = useSaveTodoDataContext();
   const modalCtx = useModalControlContext();
-  const [cacheTodos, setCacheTodos] = useState<{ data: string; createAt: number }[]>(todos);
+  const [cacheTodos, setCacheTodos] = useState<Todo[]>(todos);
 
   const updateTodoMutaion = useMutation({
     mutationKey: [TODOS_QUERY_KEY],
-    mutationFn: async (todos: Pick<Todo, 'id' | 'date' | 'description'>[]): Promise<TodoMap | undefined> => {
-      const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
-      if (!todoMap) return todoMap;
-
-      // TODO 업데이트 api 호출
-      const newTodoMap = { ...todoMap };
-      todos.forEach((newTodo) => {
-        const targetTodo = newTodoMap[newTodo.date]?.find((t) => t.id === newTodo.id);
-        if (targetTodo) {
-          targetTodo.description = newTodo.description;
-        }
-      });
-
-      return newTodoMap;
+    mutationFn: async (todoParam: TodoPostParams) => {
+      const responseBody = await fetch('/api/todo', { method: 'POST', body: JSON.stringify(todoParam) });
+      const responseData: Todo[] = await responseBody.json();
+      return { date: todoParam.date, todos: responseData };
     },
-    onSuccess: (todoMap: TodoMap | undefined) => {
-      queryClient.setQueryData([TODOS_QUERY_KEY], todoMap);
+    onSuccess: ({ date, todos }: { date: string; todos: Todo[] }) => {
+      const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
+      if (!todoMap) return;
+
+      queryClient.setQueryData([TODOS_QUERY_KEY], { ...todoMap, [date]: todos });
+      modalCtx?.close();
     },
   });
 
+  const submitHandler = async () => {
+    const date = ctx?.date;
+    if (!date) return;
+
+    const todoParam: TodoPostParams = {
+      mode: 'update',
+      userId: session.data.id,
+      date: todoDateFormatter(date),
+      data: cacheTodos.map((todo) => ({ ...todo, description: todo.description.trim() })),
+    };
+
+    updateTodoMutaion.mutate(todoParam);
+  };
+
   return (
     <>
-      {ctx && (
+      {ctx?.date && (
         <Modal
           opened={modalCtx?.opened || false}
-          onClose={() => {
-            modalCtx?.close();
-          }}
+          onClose={() => modalCtx?.close()}
           title="Edit todo"
-          styles={{
-            title: {
-              fontWeight: 700,
-            },
-          }}
+          styles={{ title: { fontWeight: 700 } }}
         >
           <Stack pt={'md'} pb={'md'} pl={'sm'} pr={'sm'} gap={'xl'}>
             <Stack gap={'xl'}>
               <SaveTodo.Date date={ctx.date} setDate={ctx.setDate} />
-              <SaveTodo.Todos todos={cacheTodos} setTodos={setCacheTodos} />
+              <SaveTodo.Todos date={todoDateFormatter(ctx.date)} todos={cacheTodos} setTodos={setCacheTodos} />
             </Stack>
-            <Button mt={'md'} color="blue.5">
-              Edit
+            <Button mt={'md'} color="blue.5" onClick={submitHandler}>
+              {updateTodoMutaion.isPaused ? 'Editing' : 'Edit'}
             </Button>
           </Stack>
         </Modal>

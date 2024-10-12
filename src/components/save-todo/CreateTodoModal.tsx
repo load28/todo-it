@@ -9,70 +9,52 @@ import { useSessionQuery } from '@/core/query/session-query';
 import { utcDayjs } from '@/core/utils/date';
 import { TodoMap, TODOS_QUERY_KEY } from '@/core/query/todo-query';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Todo, TodoPostParams } from '@/api/todo';
+import { todoDateFormatter, Todo, TodoPostParams } from '@/api/todo';
 
 export const CreateTodoModal = () => {
   const session = useSessionQuery();
   const queryClient = useQueryClient();
   const ctx = useSaveTodoDataContext();
   const modalCtx = useModalControlContext();
-  const [descriptions, setDescriptions] = useState<{ data: string; createAt: number }[]>([
-    {
-      data: '',
-      createAt: Date.now(),
-    },
-  ]);
+  const [todos, setCacheTodos] = useState<Todo[]>([{ id: '', description: '', isComplete: false, date: '', createdAt: Date.now() }]);
   const createTodoMutation = useMutation({
     mutationKey: [TODOS_QUERY_KEY],
     mutationFn: async (todoParam: TodoPostParams) => {
-      const responseBody = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo`, {
+      const responseBody = await fetch('/api/todo', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(todoParam),
       });
-
-      const responseData = await responseBody.json();
+      const responseData: Todo[] = await responseBody.json();
       return { date: todoParam.date, todos: responseData };
     },
     onSuccess: ({ date, todos }: { date: string; todos: Todo[] }) => {
       const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
       if (!todoMap) return;
 
-      queryClient.setQueryData([TODOS_QUERY_KEY], {
-        ...todoMap,
-        [date]: todos,
-      });
-
+      queryClient.setQueryData([TODOS_QUERY_KEY], { ...todoMap, [date]: todos });
       modalCtx?.close();
     },
   });
 
   const submitHandler = async () => {
     const date = ctx?.date;
-    if (!(date && modalCtx)) {
-      return;
-    }
+    if (!date) return;
 
     const todoParam: TodoPostParams = {
       mode: 'create',
       userId: session.data.id,
-      date: utcDayjs(date).format('YYYY-MM-DD'),
-      data: descriptions
-        .filter((description) => !!description)
-        .map((description) => ({
-          description: description.data.trim(),
-          isComplete: false,
-          createdAt: description.createAt,
-        })),
+      date: todoDateFormatter(date),
+      data: todos
+        .filter((todo) => !!todo.description)
+        .map((todo) => ({ isComplete: false, createdAt: todo.createdAt, description: todo.description.trim() })),
     };
     createTodoMutation.mutate(todoParam);
   };
 
   return (
     <>
-      {ctx && (
+      {ctx?.date && (
         <Modal
           opened={modalCtx?.opened || false}
           onClose={() => {
@@ -88,7 +70,7 @@ export const CreateTodoModal = () => {
           <Stack pt={'md'} pb={'md'} pl={'sm'} pr={'sm'} gap={'xl'}>
             <Stack gap={'xl'}>
               <SaveTodo.Date date={ctx.date} setDate={ctx.setDate} />
-              <SaveTodo.Todos todos={descriptions} setTodos={setDescriptions} />
+              <SaveTodo.Todos date={todoDateFormatter(ctx.date)} todos={todos} setTodos={setCacheTodos} />
             </Stack>
             <Button mt={'md'} color="blue.5" onClick={submitHandler}>
               {createTodoMutation.isPending ? 'Adding...' : 'Add'}

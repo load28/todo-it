@@ -7,19 +7,13 @@ import { SaveTodoDataProvider } from '@/components/save-todo/SaveTodoData.contex
 import { useTodoMapQuery } from '@/core/query/todo-query';
 import { useSessionQuery } from '@/core/query/session-query';
 import { utcDayjs } from '@/core/utils/date';
+import { todoDateFormatter } from '@/api/todo';
 
 export function SaveTodoModal({ date }: PropsWithoutRef<{ date: string }>) {
   const session = useSessionQuery();
   const [cachedDate, setCachedDate] = useState<Date | null>(utcDayjs(date).toDate());
   const { data: todoMap } = useTodoMapQuery(session.data.id);
-  const todos = useMemo(
-    () =>
-      todoMap?.[utcDayjs(cachedDate).format('YYYY-MM-DD')]?.map((todo) => ({
-        data: todo.description,
-        createAt: todo.createdAt,
-      })),
-    [todoMap, cachedDate],
-  );
+  const todos = useMemo(() => (cachedDate ? todoMap?.[todoDateFormatter(cachedDate)] : undefined), [todoMap, cachedDate]);
 
   return (
     <SaveTodoDataProvider value={{ date: cachedDate, setDate: setCachedDate }}>

@@ -1,7 +1,7 @@
 'use server';
 
 const ENV = {
-  NEXT_PUBLIC_APP_HOST: process.env.NEXT_PUBLIC_APP_HOST as string,
+  NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL as string,
   API_URL: process.env.API_URL as string,
   AUTH_URL: process.env.AUTH_URL as string,
   AUTH_SECRET: process.env.AUTH_SECRET as string,
