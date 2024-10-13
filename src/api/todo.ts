@@ -17,7 +17,7 @@ export type DateString = z.infer<typeof TodoDateStringSchema>;
 export const TodoSchema = z.object({
   id: z.string(),
   date: TodoDateStringSchema,
-  description: z.string().max(300),
+  description: z.string().trim().max(300),
   isComplete: z.boolean(),
   createdAt: z.number(),
 });
