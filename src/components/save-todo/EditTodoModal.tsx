@@ -7,7 +7,7 @@ import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.cont
 import { PropsWithoutRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { TodoMap, TODOS_QUERY_KEY } from '@/core/query/todo-query';
-import { todoDateFormatter, Todo, TodoPostParams } from '@/api/todo';
+import { todoDateFormatter, Todo, TodoSaveParams } from '@/api/todo';
 import { getQueryClient } from '@/core/providers/query/query-utils';
 import { useSessionQuery } from '@/core/query/session-query';
 
@@ -18,12 +18,13 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
   const modalCtx = useModalControlContext();
   const [cacheTodos, setCacheTodos] = useState<Todo[]>(todos);
 
+  // TODO: 생성/수정/삭제를 하는 mutation hook을 하나 만들어야함
   const updateTodoMutaion = useMutation({
     mutationKey: [TODOS_QUERY_KEY],
-    mutationFn: async (todoParam: TodoPostParams) => {
-      const responseBody = await fetch('/api/todo', { method: 'POST', body: JSON.stringify(todoParam) });
+    mutationFn: async (todoSaveParam: TodoSaveParams) => {
+      const responseBody = await fetch('/api/todo', { method: 'POST', body: JSON.stringify(todoSaveParam) });
       const responseData: Todo[] = await responseBody.json();
-      return { date: todoParam.date, todos: responseData };
+      return { date: todoSaveParam.date, todos: responseData };
     },
     onSuccess: ({ date, todos }: { date: string; todos: Todo[] }) => {
       const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
@@ -38,11 +39,32 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
     const date = ctx?.date;
     if (!date) return;
 
-    const todoParam: TodoPostParams = {
-      mode: 'update',
+    const trimmedTodos = cacheTodos.map((todo) => ({ ...todo, description: todo.description.trim() }));
+    const todoParam: TodoSaveParams = {
       userId: session.data.id,
       date: todoDateFormatter(date),
-      data: cacheTodos.map((todo) => ({ ...todo, description: todo.description.trim() })),
+      data: {
+        create: trimmedTodos
+          .filter((todo) => !todo.id)
+          .map((todo) => {
+            return {
+              description: todo.description,
+              isComplete: todo.isComplete,
+              createdAt: todo.createdAt,
+            };
+          }),
+        update: trimmedTodos
+          .filter((todo) => todo.id)
+          .map((todo) => {
+            return {
+              id: todo.id,
+              description: todo.description,
+              isComplete: todo.isComplete,
+              createdAt: todo.createdAt,
+            };
+          }),
+        delete: todos.filter((todo) => trimmedTodos.every((cacheTodo) => cacheTodo.id !== todo.id)).map((todo) => todo.id),
+      },
     };
 
     updateTodoMutaion.mutate(todoParam);

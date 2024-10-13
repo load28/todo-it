@@ -22,20 +22,16 @@ export const TodoSchema = z.object({
   createdAt: z.number(),
 });
 export type Todo = z.infer<typeof TodoSchema>;
-export const TodoPostParamsSchema = z.object({
-  mode: z.literal('create'),
+export const TodoSaveParamsSchema = z.object({
   userId: z.string(),
   date: TodoDateStringSchema,
-  data: z.array(TodoSchema.omit({ id: true, date: true })),
+  data: z.object({
+    create: z.array(TodoSchema.omit({ id: true, date: true })).optional(),
+    update: z.array(TodoSchema.omit({ date: true })).optional(),
+    delete: z.array(z.string()).optional(),
+  }),
 });
-// TODO 기존 데이터에 추가하는 케이스도 처리 할 수 있어야 함
-export const TodoUpdateParamsSchema = z.object({
-  mode: z.literal('update'),
-  userId: z.string(),
-  date: TodoDateStringSchema,
-  data: z.array(TodoSchema.omit({ date: true })),
-});
-export type TodoPostParams = z.infer<typeof TodoPostParamsSchema | typeof TodoUpdateParamsSchema>;
+export type TodoSaveParams = z.infer<typeof TodoSaveParamsSchema>;
 
 export async function getTodos(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get('userId');
@@ -73,31 +69,19 @@ export async function getTodos(req: NextRequest) {
 export async function saveTodos(req: Request) {
   try {
     const requestBody = await req.json();
-    const postParseData = TodoPostParamsSchema.safeParse(requestBody);
-    const updateParseData = TodoUpdateParamsSchema.safeParse(requestBody);
+    const saveParseData = TodoSaveParamsSchema.safeParse(requestBody);
 
-    if (!(postParseData.error || updateParseData.error)) {
-      // todo invalidation error 정의
-      return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
+    if (saveParseData.error) {
+      return NextResponse.json({ error: saveParseData.error.message }, { status: 400 });
     }
 
-    if (postParseData.success) {
-      const { userId, date, data } = postParseData.data;
-      const dataset: Todo[] = data.map((todo) => ({ id: v4(), date, ...todo }));
-      const transactItems = dataset.map((todo) => ({
-        Put: {
-          TableName: 'todo',
-          Item: marshall({ ...todo, userId }),
-        },
-      }));
-
-      await dbDocument.send(new TransactWriteItemsCommand({ TransactItems: transactItems }));
-      return NextResponse.json(dataset) satisfies NextResponse<Todo[]>;
-    }
-
-    if (updateParseData.success) {
-      const { date, data } = updateParseData.data;
-      const transactItems = data.map((todo) => ({
+    const transactItems = [];
+    const { userId, date, data } = saveParseData.data;
+    const createData: Todo[] = data.create?.map((todo) => ({ ...todo, date, id: v4() })) || [];
+    const createTransactItems = createData.map((todo) => ({ Put: { TableName: 'todo', Item: marshall({ ...todo, userId }) } })) || [];
+    const updateData = data.update || [];
+    const updateTransactItems =
+      updateData.map((todo) => ({
         Update: {
           TableName: 'todo',
           Key: marshall({ id: todo.id, date }),
@@ -111,11 +95,19 @@ export async function saveTodos(req: Request) {
             ':isComplete': todo.isComplete,
           }),
         },
-      }));
+      })) || [];
+    const deleteTransactItems =
+      data.delete?.map((id) => ({
+        Delete: {
+          TableName: 'todo',
+          Key: marshall({ id, date }),
+        },
+      })) || [];
 
-      await dbDocument.send(new TransactWriteItemsCommand({ TransactItems: transactItems }));
-      return NextResponse.json(data.map((todo) => ({ ...todo, date }))) satisfies NextResponse<Todo[]>;
-    }
+    transactItems.push(...createTransactItems, ...updateTransactItems, ...deleteTransactItems);
+    await dbDocument.send(new TransactWriteItemsCommand({ TransactItems: transactItems }));
+
+    return NextResponse.json([...createData, ...updateData.map((todo) => ({ ...todo, date }))]) satisfies NextResponse<Todo[]>;
   } catch (error: unknown) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

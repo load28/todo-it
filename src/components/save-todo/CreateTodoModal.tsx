@@ -8,7 +8,7 @@ import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.cont
 import { useSessionQuery } from '@/core/query/session-query';
 import { TodoMap, TODOS_QUERY_KEY } from '@/core/query/todo-query';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { todoDateFormatter, Todo, TodoPostParams } from '@/api/todo';
+import { todoDateFormatter, Todo, TodoSaveParams } from '@/api/todo';
 
 export const CreateTodoModal = () => {
   const session = useSessionQuery();
@@ -18,7 +18,7 @@ export const CreateTodoModal = () => {
   const [todos, setCacheTodos] = useState<Todo[]>([{ id: '', description: '', isComplete: false, date: '', createdAt: Date.now() }]);
   const createTodoMutation = useMutation({
     mutationKey: [TODOS_QUERY_KEY],
-    mutationFn: async (todoParam: TodoPostParams) => {
+    mutationFn: async (todoParam: TodoSaveParams) => {
       const responseBody = await fetch('/api/todo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -40,13 +40,14 @@ export const CreateTodoModal = () => {
     const date = ctx?.date;
     if (!date) return;
 
-    const todoParam: TodoPostParams = {
-      mode: 'create',
+    const todoParam: TodoSaveParams = {
       userId: session.data.id,
       date: todoDateFormatter(date),
-      data: todos
-        .filter((todo) => !!todo.description)
-        .map((todo) => ({ isComplete: false, createdAt: todo.createdAt, description: todo.description.trim() })),
+      data: {
+        create: todos
+          .filter((todo) => !!todo.description)
+          .map((todo) => ({ isComplete: false, createdAt: todo.createdAt, description: todo.description.trim() })),
+      },
     };
     createTodoMutation.mutate(todoParam);
   };
