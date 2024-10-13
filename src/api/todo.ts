@@ -12,7 +12,6 @@ export const todoDateFormatter = (date: Date) => utcDayjs(date).format('YYYY-MM-
 const TodoDateStringSchema = z.string().regex(todoDateRegex, {
   message: "Invalid date format. Expected 'YYYY-MM-DD'.",
 });
-export type DateString = z.infer<typeof TodoDateStringSchema>;
 // TODO 백엔드와 클라이언트간의 인터페이스 분리가 필요함
 export const TodoSchema = z.object({
   id: z.string(),
