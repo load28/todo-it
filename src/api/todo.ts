@@ -95,13 +95,7 @@ export async function saveTodos(req: Request) {
           }),
         },
       })) || [];
-    const deleteTransactItems =
-      data.delete?.map((id) => ({
-        Delete: {
-          TableName: 'todo',
-          Key: marshall({ id, date }),
-        },
-      })) || [];
+    const deleteTransactItems = data.delete?.map((id) => ({ Delete: { TableName: 'todo', Key: marshall({ id, date }) } })) || [];
 
     const transactItems = [...createTransactItems, ...updateTransactItems, ...deleteTransactItems];
     await dbDocument.send(new TransactWriteItemsCommand({ TransactItems: transactItems }));
