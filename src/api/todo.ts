@@ -75,7 +75,6 @@ export async function saveTodos(req: Request) {
       return NextResponse.json({ error: saveParseData.error.message }, { status: 400 });
     }
 
-    const transactItems = [];
     const { userId, date, data } = saveParseData.data;
     const createData: Todo[] = data.create?.map((todo) => ({ ...todo, date, id: v4() })) || [];
     const createTransactItems = createData.map((todo) => ({ Put: { TableName: 'todo', Item: marshall({ ...todo, userId }) } })) || [];
@@ -104,7 +103,7 @@ export async function saveTodos(req: Request) {
         },
       })) || [];
 
-    transactItems.push(...createTransactItems, ...updateTransactItems, ...deleteTransactItems);
+    const transactItems = [...createTransactItems, ...updateTransactItems, ...deleteTransactItems];
     await dbDocument.send(new TransactWriteItemsCommand({ TransactItems: transactItems }));
 
     return NextResponse.json([...createData, ...updateData.map((todo) => ({ ...todo, date }))]) satisfies NextResponse<Todo[]>;
