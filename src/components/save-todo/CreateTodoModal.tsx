@@ -6,7 +6,6 @@ import { Button, Modal, Stack } from '@mantine/core';
 import { useState } from 'react';
 import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.context';
 import { useSessionQuery } from '@/core/query/session-query';
-import { utcDayjs } from '@/core/utils/date';
 import { TodoMap, TODOS_QUERY_KEY } from '@/core/query/todo-query';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { todoDateFormatter, Todo, TodoPostParams } from '@/api/todo';
