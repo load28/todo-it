@@ -18,7 +18,7 @@ export const useTodoMapQuery = (userId: string) => useQuery(todoMapQueryOptions(
 export const todoMapQueryPrefetch = async (queryClient: QueryClient, userId: string) =>
   await queryClient.prefetchQuery(todoMapQueryOptions(userId));
 
-export const useTodoSaveQuery = (onSuccess: () => void) => {
+export const useSaveTodoQuery = (onSuccess?: () => void) => {
   const queryClient = getQueryClient();
   return useMutation({
     mutationKey: [TODOS_QUERY_KEY],
@@ -36,7 +36,60 @@ export const useTodoSaveQuery = (onSuccess: () => void) => {
       if (!todoMap) return;
 
       queryClient.setQueryData([TODOS_QUERY_KEY], { ...todoMap, [date]: todos });
-      onSuccess();
+      onSuccess?.();
+    },
+  });
+};
+
+/**
+ * Custom hook to update the toggle state of a Todo item using optimistic updates
+ *
+ * Optimistic update approach:
+ * 1. Immediately updates the UI in response to user action
+ * 2. Saves the changes to the server in the background
+ * 3. Rolls back to the previous state if an error occurs
+ */
+export const useToggleTodoQuery = () => {
+  const queryClient = getQueryClient();
+  return useMutation({
+    mutationKey: [TODOS_QUERY_KEY],
+    mutationFn: async (todoSaveParams: TodoSaveParams) => {
+      const responseBody = await fetch('/api/todo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(todoSaveParams),
+      });
+      if (responseBody.status !== 200) {
+        throw new Error('Failed to save todo');
+      }
+
+      const responseData: Todo[] = await responseBody.json();
+      return { date: todoSaveParams.date, result: responseData };
+    },
+    onMutate: (todoSaveParams: TodoSaveParams) => {
+      const date = todoSaveParams.date;
+      const previousTodoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
+      if (!(previousTodoMap && previousTodoMap[date] && todoSaveParams.data.update)) return;
+
+      const newTodos: Todo[] = [...previousTodoMap[date]];
+      const updatedTodos: Todo[] = todoSaveParams.data.update.map((update) => ({ ...update, date }));
+      updatedTodos.forEach((updatedTodo) => {
+        const index = newTodos.findIndex((todo) => todo.id === updatedTodo.id);
+        if (index < 0) return;
+
+        newTodos[index] = updatedTodo;
+      });
+      queryClient.setQueryData([TODOS_QUERY_KEY], { ...previousTodoMap, [date]: newTodos });
+
+      return previousTodoMap;
+    },
+    onError: (error, _, context) => {
+      if (context) {
+        // TODO 에러를 캐치해서 sentry 같은 곳으로 보내거나, 사용자에게 알림을 띄워줄 수 있습니다.
+        queryClient.setQueryData([TODOS_QUERY_KEY], context);
+      }
     },
   });
 };

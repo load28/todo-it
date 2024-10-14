@@ -5,7 +5,7 @@ import { SaveTodo } from '@/components/save-todo/SaveTodo';
 import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.context';
 import { useModalControlContext } from '@/core/providers/ModalControl.context';
 import { useSessionQuery } from '@/core/query/session-query';
-import { useTodoSaveQuery } from '@/core/query/todo-query';
+import { useSaveTodoQuery } from '@/core/query/todo-query';
 import { Button, Modal, Stack } from '@mantine/core';
 import { PropsWithoutRef, useState } from 'react';
 
@@ -14,7 +14,7 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
   const ctx = useSaveTodoDataContext();
   const modalCtx = useModalControlContext();
   const [cacheTodos, setCacheTodos] = useState<Todo[]>(todos);
-  const saveTodoMutation = useTodoSaveQuery(() => modalCtx?.close());
+  const saveTodoMutation = useSaveTodoQuery(() => modalCtx?.close());
 
   const submitHandler = async () => {
     const date = ctx?.date;

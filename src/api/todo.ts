@@ -21,6 +21,7 @@ export const TodoSchema = z.object({
   createdAt: z.number(),
 });
 export type Todo = z.infer<typeof TodoSchema>;
+// TODO 추후 모든 todo 데이터 안에 date를 넣어서 서로 다른 날짜의 todo를 한번에 저장할 수 있도록 변경
 export const TodoSaveParamsSchema = z.object({
   userId: z.string(),
   date: TodoDateStringSchema,
@@ -76,24 +77,23 @@ export async function saveTodos(req: Request) {
 
     const { userId, date, data } = saveParseData.data;
     const createData: Todo[] = data.create?.map((todo) => ({ ...todo, date, id: v4() })) || [];
-    const createTransactItems = createData.map((todo) => ({ Put: { TableName: 'todo', Item: marshall({ ...todo, userId }) } })) || [];
+    const createTransactItems = createData.map((todo) => ({ Put: { TableName: 'todo', Item: marshall({ ...todo, userId }) } }));
     const updateData = data.update || [];
-    const updateTransactItems =
-      updateData.map((todo) => ({
-        Update: {
-          TableName: 'todo',
-          Key: marshall({ id: todo.id, date }),
-          UpdateExpression: 'set #description = :description, #isComplete = :isComplete',
-          ExpressionAttributeNames: {
-            '#description': 'description',
-            '#isComplete': 'isComplete',
-          },
-          ExpressionAttributeValues: marshall({
-            ':description': todo.description,
-            ':isComplete': todo.isComplete,
-          }),
+    const updateTransactItems = updateData.map((todo) => ({
+      Update: {
+        TableName: 'todo',
+        Key: marshall({ id: todo.id, date }),
+        UpdateExpression: 'set #description = :description, #isComplete = :isComplete',
+        ExpressionAttributeNames: {
+          '#description': 'description',
+          '#isComplete': 'isComplete',
         },
-      })) || [];
+        ExpressionAttributeValues: marshall({
+          ':description': todo.description,
+          ':isComplete': todo.isComplete,
+        }),
+      },
+    }));
     const deleteTransactItems = data.delete?.map((id) => ({ Delete: { TableName: 'todo', Key: marshall({ id, date }) } })) || [];
 
     const transactItems = [...createTransactItems, ...updateTransactItems, ...deleteTransactItems];

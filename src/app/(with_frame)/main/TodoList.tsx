@@ -1,36 +1,35 @@
 'use client';
 
+import { Todo } from '@/api/todo';
+import classes from '@/app/(with_frame)/main/TodoList.module.css';
 import { SaveTodoModal } from '@/components/save-todo/SaveTodoModal';
 import { ModalControlProvider } from '@/core/providers/ModalControl.context';
-import classes from '@/app/(with_frame)/main/TodoList.module.css';
+import { getQueryClient } from '@/core/providers/query/query-utils';
+import { useSessionQuery } from '@/core/query/session-query';
+import { useToggleTodoQuery } from '@/core/query/todo-query';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
-import React, { ChangeEvent, PropsWithChildren } from 'react';
-import { TodoMap, TODOS_QUERY_KEY } from '@/core/query/todo-query';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-import { Todo } from '@/api/todo';
+import { ChangeEvent, PropsWithChildren } from 'react';
 
 export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; date: string }>) {
-  const queryClient = useQueryClient();
+  const session = useSessionQuery();
+  const queryClient = getQueryClient();
   const [opened, { open, close }] = useDisclosure(false);
-  const todoMutation = useMutation({
-    mutationKey: [TODOS_QUERY_KEY],
-    mutationFn: async ({ id, date }: { id: string; date: string }): Promise<TodoMap | undefined> => {
-      const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
-      if (!todoMap) return todoMap;
+  const todoMutation = useToggleTodoQuery();
 
-      const newTodoMap = { ...todoMap };
-      const targetTodos = newTodoMap?.[date] || [];
-      const newTodos = targetTodos.map((todo) => (todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo));
-      newTodoMap[date] = newTodos;
-      return newTodoMap;
-    },
-    onSuccess: (todoMap: TodoMap | undefined) => queryClient.setQueryData([TODOS_QUERY_KEY], todoMap),
-  });
+  const checkboxHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const updatedTodo = todos.find((todo) => todo.id === e.target.id);
+    if (!updatedTodo) {
+      return;
+    }
 
-  const checkboxHandler = (e: ChangeEvent<HTMLInputElement>) => todoMutation.mutate({ id: e.target.id, date });
+    todoMutation.mutate({
+      date,
+      userId: session.data.id,
+      data: { update: [{ ...updatedTodo, isComplete: !updatedTodo.isComplete }] },
+    });
+  };
   const editHandler = () => open();
 
   return (
