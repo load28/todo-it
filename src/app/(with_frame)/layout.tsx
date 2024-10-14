@@ -14,9 +14,11 @@ export default async function layout({ children }: { children: React.ReactNode }
       <div className="layout">
         <Navbar />
         <div className="layoutMain">
-          <Stack pl={24} pr={24} h={'100%'}>
-            {children}
-          </Stack>
+          <div className="layoutMainContent">
+            <Stack pl={24} pr={24} h={'100%'}>
+              {children}
+            </Stack>
+          </div>
         </div>
       </div>
     </HydrationBoundary>

@@ -23,7 +23,13 @@ body {
   display: flex;
 
   .layoutMain {
+    height: 100vh;
+    overflow-y: scroll;
     flex: 1;
-    padding: var(--mantine-spacing-md);
+
+    .layoutMainContent {
+      height: 100%;
+      padding: var(--mantine-spacing-md);
+    }
   }
 }
