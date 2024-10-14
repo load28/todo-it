@@ -1,40 +1,20 @@
 'use client';
 
+import { Todo, todoDateFormatter, TodoSaveParams } from '@/api/todo';
 import { SaveTodo } from '@/components/save-todo/SaveTodo';
+import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.context';
 import { useModalControlContext } from '@/core/providers/ModalControl.context';
+import { useSessionQuery } from '@/core/query/session-query';
+import { useTodoSaveQuery } from '@/core/query/todo-query';
 import { Button, Modal, Stack } from '@mantine/core';
 import { useState } from 'react';
-import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.context';
-import { useSessionQuery } from '@/core/query/session-query';
-import { TodoMap, TODOS_QUERY_KEY } from '@/core/query/todo-query';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { todoDateFormatter, Todo, TodoSaveParams } from '@/api/todo';
 
 export const CreateTodoModal = () => {
   const session = useSessionQuery();
-  const queryClient = useQueryClient();
   const ctx = useSaveTodoDataContext();
   const modalCtx = useModalControlContext();
   const [todos, setCacheTodos] = useState<Todo[]>([{ id: '', description: '', isComplete: false, date: '', createdAt: Date.now() }]);
-  const createTodoMutation = useMutation({
-    mutationKey: [TODOS_QUERY_KEY],
-    mutationFn: async (todoParam: TodoSaveParams) => {
-      const responseBody = await fetch('/api/todo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(todoParam),
-      });
-      const responseData: Todo[] = await responseBody.json();
-      return { date: todoParam.date, todos: responseData };
-    },
-    onSuccess: ({ date, todos }: { date: string; todos: Todo[] }) => {
-      const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
-      if (!todoMap) return;
-
-      queryClient.setQueryData([TODOS_QUERY_KEY], { ...todoMap, [date]: todos });
-      modalCtx?.close();
-    },
-  });
+  const saveTodoMutation = useTodoSaveQuery(() => modalCtx?.close());
 
   const submitHandler = async () => {
     const date = ctx?.date;
@@ -49,7 +29,7 @@ export const CreateTodoModal = () => {
           .map((todo) => ({ isComplete: false, createdAt: todo.createdAt, description: todo.description.trim() })),
       },
     };
-    createTodoMutation.mutate(todoParam);
+    saveTodoMutation.mutate(todoParam);
   };
 
   return (
@@ -73,7 +53,7 @@ export const CreateTodoModal = () => {
               <SaveTodo.Todos date={todoDateFormatter(ctx.date)} todos={todos} setTodos={setCacheTodos} />
             </Stack>
             <Button mt={'md'} color="blue.5" onClick={submitHandler}>
-              {createTodoMutation.isPending ? 'Adding...' : 'Add'}
+              {saveTodoMutation.isPending ? 'Adding...' : 'Add'}
             </Button>
           </Stack>
         </Modal>
