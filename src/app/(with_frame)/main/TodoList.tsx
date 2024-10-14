@@ -4,7 +4,6 @@ import { Todo } from '@/api/todo';
 import classes from '@/app/(with_frame)/main/TodoList.module.css';
 import { SaveTodoModal } from '@/components/save-todo/SaveTodoModal';
 import { ModalControlProvider } from '@/core/providers/ModalControl.context';
-import { getQueryClient } from '@/core/providers/query/query-utils';
 import { useSessionQuery } from '@/core/query/session-query';
 import { useToggleTodoQuery } from '@/core/query/todo-query';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
@@ -14,7 +13,6 @@ import { ChangeEvent, PropsWithChildren } from 'react';
 
 export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; date: string }>) {
   const session = useSessionQuery();
-  const queryClient = getQueryClient();
   const [opened, { open, close }] = useDisclosure(false);
   const todoMutation = useToggleTodoQuery();
 

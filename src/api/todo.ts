@@ -1,11 +1,12 @@
-import { z } from 'zod';
-import { NextRequest, NextResponse } from 'next/server';
 import { dbDocument } from '@/core/db/dynamoDB';
-import { QueryCommand } from '@aws-sdk/lib-dynamodb';
-import { v4 } from 'uuid';
-import { TransactWriteItemsCommand } from '@aws-sdk/client-dynamodb';
-import { marshall } from '@aws-sdk/util-dynamodb';
 import { utcDayjs } from '@/core/utils/date';
+import { TransactWriteItemsCommand } from '@aws-sdk/client-dynamodb';
+import { QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { marshall } from '@aws-sdk/util-dynamodb';
+import { NextRequest, NextResponse } from 'next/server';
+import { v4 } from 'uuid';
+import { z } from 'zod';
+import { ApiResponse } from './types';
 
 export const todoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
 export const todoDateFormatter = (date: Date) => utcDayjs(date).format('YYYY-MM-DD');
@@ -33,10 +34,9 @@ export const TodoSaveParamsSchema = z.object({
 });
 export type TodoSaveParams = z.infer<typeof TodoSaveParamsSchema>;
 
-export async function getTodos(req: NextRequest) {
+export async function getTodos(req: NextRequest): Promise<ApiResponse<Todo[]>> {
   const userId = req.nextUrl.searchParams.get('userId');
   if (!userId) {
-    // todo invalidation error 정의
     return NextResponse.json({ error: 'Not found user id' }, { status: 400 });
   }
 
@@ -63,10 +63,10 @@ export async function getTodos(req: NextRequest) {
       };
     }) || [];
 
-  return NextResponse.json(responseData);
+  return NextResponse.json({ data: responseData });
 }
 
-export async function saveTodos(req: Request) {
+export async function saveTodos(req: Request): Promise<ApiResponse<Todo[]>> {
   try {
     const requestBody = await req.json();
     const saveParseData = TodoSaveParamsSchema.safeParse(requestBody);
@@ -99,7 +99,7 @@ export async function saveTodos(req: Request) {
     const transactItems = [...createTransactItems, ...updateTransactItems, ...deleteTransactItems];
     await dbDocument.send(new TransactWriteItemsCommand({ TransactItems: transactItems }));
 
-    return NextResponse.json([...createData, ...updateData.map((todo) => ({ ...todo, date }))]) satisfies NextResponse<Todo[]>;
+    return NextResponse.json({ data: [...createData, ...updateData.map((todo) => ({ ...todo, date }))] });
   } catch (error: unknown) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

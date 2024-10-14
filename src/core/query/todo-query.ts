@@ -1,4 +1,5 @@
 import { Todo, TodoSaveParams } from '@/api/todo';
+import { ApiResponseData, isErrorResponse } from '@/api/types';
 import { QueryClient, queryOptions, useMutation, useQuery } from '@tanstack/react-query';
 import { getQueryClient } from '../providers/query/query-utils';
 
@@ -9,8 +10,13 @@ const todoMapQueryOptions = (userId: string) =>
     queryKey: [TODOS_QUERY_KEY],
     queryFn: async (): Promise<TodoMap> => {
       const responseBody = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo?userId=${userId}`);
-      const data = await responseBody.json();
-      return todoToMap(data);
+      const responseData: ApiResponseData<Todo[]> = await responseBody.json();
+      if (isErrorResponse(responseData)) {
+        // TODO 서버 에러 발생시 useQuery 훅에서는 직접 핸들링을 해야함
+        return {};
+      }
+
+      return todoToMap(responseData.data);
     },
   });
 
@@ -28,8 +34,13 @@ export const useSaveTodoQuery = (onSuccess?: () => void) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(todoParam),
       });
-      const responseData: Todo[] = await responseBody.json();
-      return { date: todoParam.date, todos: responseData };
+      const responseData: ApiResponseData<Todo[]> = await responseBody.json();
+      // TODO 에러 핸들링을 해야함
+      if (isErrorResponse(responseData)) {
+        throw new Error(responseData.error);
+      }
+
+      return { date: todoParam.date, todos: responseData.data };
     },
     onSuccess: ({ date, todos }: { date: string; todos: Todo[] }) => {
       const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
@@ -53,7 +64,7 @@ export const useToggleTodoQuery = () => {
   const queryClient = getQueryClient();
   return useMutation({
     mutationKey: [TODOS_QUERY_KEY],
-    mutationFn: async (todoSaveParams: TodoSaveParams) => {
+    mutationFn: async (todoSaveParams: TodoSaveParams): Promise<{ date: string; result: Todo[] }> => {
       const responseBody = await fetch('/api/todo', {
         method: 'POST',
         headers: {
@@ -61,12 +72,12 @@ export const useToggleTodoQuery = () => {
         },
         body: JSON.stringify(todoSaveParams),
       });
-      if (responseBody.status !== 200) {
-        throw new Error('Failed to save todo');
+      const responseData: ApiResponseData<Todo[]> = await responseBody.json();
+      if (isErrorResponse(responseData)) {
+        throw new Error(responseData.error);
       }
 
-      const responseData: Todo[] = await responseBody.json();
-      return { date: todoSaveParams.date, result: responseData };
+      return { date: todoSaveParams.date, result: responseData.data };
     },
     onMutate: (todoSaveParams: TodoSaveParams) => {
       const date = todoSaveParams.date;
@@ -85,23 +96,20 @@ export const useToggleTodoQuery = () => {
 
       return previousTodoMap;
     },
-    onError: (error, _, context) => {
-      if (context) {
-        // TODO 에러를 캐치해서 sentry 같은 곳으로 보내거나, 사용자에게 알림을 띄워줄 수 있습니다.
-        queryClient.setQueryData([TODOS_QUERY_KEY], context);
-      }
+    onError: (error, _, context: TodoMap | undefined) => {
+      if (!context) return;
+      // TODO 에러를 캐치해서 sentry 같은 곳으로 보내거나, 사용자에게 알림을 띄워줄 수 있습니다.
+      queryClient.setQueryData([TODOS_QUERY_KEY], context);
     },
   });
 };
 
-export const todoToMap = (todos?: Todo[]): Record<string, Todo[] | undefined> => {
-  return (
-    todos?.reduce<Record<string, Todo[]>>((acc, todo) => {
-      const date = todo.date;
-      return {
-        ...acc,
-        [date]: [...(acc[date] || []), todo],
-      };
-    }, {}) || {}
-  );
+export const todoToMap = (todos: Todo[]): Record<string, Todo[] | undefined> => {
+  return todos.reduce<Record<string, Todo[]>>((acc, todo) => {
+    const date = todo.date;
+    return {
+      ...acc,
+      [date]: [...(acc[date] || []), todo],
+    };
+  }, {});
 };
