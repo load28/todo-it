@@ -30,7 +30,7 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
     });
   };
   const onEditHandler = () => open();
-  const onDeletehander = () => {
+  const onDeleteHandler = () => {
     const todoSaveParams: TodoSaveParamsWithRequiredDelete = {
       date,
       userId: session.data.id,
@@ -60,7 +60,7 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
             <Menu.Item leftSection={<IconEdit size={14} />} onClick={onEditHandler}>
               Edit
             </Menu.Item>
-            <Menu.Item leftSection={<IconTrash size={14} />} style={{ color: 'red' }} onClick={onDeletehander}>
+            <Menu.Item leftSection={<IconTrash size={14} />} style={{ color: 'red' }} onClick={onDeleteHandler}>
               Delete
             </Menu.Item>
           </Menu.Dropdown>
