@@ -5,12 +5,26 @@ import { getQueryClient } from '../providers/query/query-utils';
 
 export const TODOS_QUERY_KEY = 'todos';
 export type TodoMap = Record<string, Todo[] | undefined>;
+
+async function getTodoFetch(userId: string): Promise<ApiResponseData<Todo[]>> {
+  const responseBody = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo?userId=${userId}`);
+  return await responseBody.json();
+}
+
+async function saveTodoFetch(todoSaveParams: TodoSaveParams): Promise<ApiResponseData<Todo[]>> {
+  const responseBody = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(todoSaveParams),
+  });
+  return await responseBody.json();
+}
+
 const todoMapQueryOptions = (userId: string) =>
   queryOptions({
     queryKey: [TODOS_QUERY_KEY],
     queryFn: async (): Promise<TodoMap> => {
-      const responseBody = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/todo?userId=${userId}`);
-      const responseData: ApiResponseData<Todo[]> = await responseBody.json();
+      const responseData: ApiResponseData<Todo[]> = await getTodoFetch(userId);
       if (isErrorResponse(responseData)) {
         // TODO 서버 에러 발생시 useQuery 훅에서는 직접 핸들링을 해야함
         return {};
@@ -28,19 +42,14 @@ export const useSaveTodoQuery = (onSuccess?: () => void) => {
   const queryClient = getQueryClient();
   return useMutation({
     mutationKey: [TODOS_QUERY_KEY],
-    mutationFn: async (todoParam: TodoSaveParams) => {
-      const responseBody = await fetch('/api/todo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(todoParam),
-      });
-      const responseData: ApiResponseData<Todo[]> = await responseBody.json();
+    mutationFn: async (todoSaveParams: TodoSaveParams) => {
+      const responseData = await saveTodoFetch(todoSaveParams);
       // TODO 에러 핸들링을 해야함
       if (isErrorResponse(responseData)) {
         throw new Error(responseData.error);
       }
 
-      return { date: todoParam.date, todos: responseData.data };
+      return { date: todoSaveParams.date, todos: responseData.data };
     },
     onSuccess: ({ date, todos }: { date: string; todos: Todo[] }) => {
       const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
@@ -65,14 +74,7 @@ export const useToggleTodoQuery = () => {
   return useMutation({
     mutationKey: [TODOS_QUERY_KEY],
     mutationFn: async (todoSaveParams: TodoSaveParams): Promise<{ date: string; result: Todo[] }> => {
-      const responseBody = await fetch('/api/todo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(todoSaveParams),
-      });
-      const responseData: ApiResponseData<Todo[]> = await responseBody.json();
+      const responseData = await saveTodoFetch(todoSaveParams);
       if (isErrorResponse(responseData)) {
         throw new Error(responseData.error);
       }
