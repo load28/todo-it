@@ -1,11 +1,11 @@
 'use client';
 
-import { Todo, TodoSaveParams } from '@/api/todo';
+import { Todo } from '@/api/todo';
 import classes from '@/app/(with_frame)/main/TodoList.module.css';
 import { SaveTodoModal } from '@/components/save-todo/SaveTodoModal';
 import { ModalControlProvider } from '@/core/providers/ModalControl.context';
 import { useSessionQuery } from '@/core/query/session-query';
-import { useSaveTodoQuery, useToggleTodoQuery } from '@/core/query/todo-query';
+import { TodoSaveParamsWithRequiredDelete, useRemoveTodoQery, useToggleTodoQuery } from '@/core/query/todo-query';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
@@ -15,7 +15,7 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
   const session = useSessionQuery();
   const [opened, { open, close }] = useDisclosure(false);
   const todoMutation = useToggleTodoQuery();
-  const todoSaveMutation = useSaveTodoQuery();
+  const todoRemoveMutation = useRemoveTodoQery();
 
   const onCheckboxHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const updatedTodo = todos.find((todo) => todo.id === e.target.id);
@@ -23,7 +23,6 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
       return;
     }
 
-    // TODO 디바운스 기능을 넣어야함
     todoMutation.mutate({
       date,
       userId: session.data.id,
@@ -32,8 +31,12 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
   };
   const onEditHandler = () => open();
   const onDeletehander = () => {
-    const todoSaveParams: TodoSaveParams = { userId: session.data.id, date, data: { delete: todos.map((todo) => todo.id) } };
-    todoSaveMutation.mutate(todoSaveParams);
+    const todoSaveParams: TodoSaveParamsWithRequiredDelete = {
+      date,
+      userId: session.data.id,
+      data: { delete: todos.map((todo) => todo.id) },
+    };
+    todoRemoveMutation.mutate(todoSaveParams);
   };
 
   return (

@@ -1,6 +1,7 @@
 import { Todo, TodoSaveParams } from '@/api/todo';
 import { ApiResponseData, isErrorResponse } from '@/api/types';
 import { QueryClient, queryOptions, useMutation, useQuery } from '@tanstack/react-query';
+import { omit } from 'es-toolkit';
 import { getQueryClient } from '../providers/query/query-utils';
 
 export const TODOS_QUERY_KEY = 'todos';
@@ -56,6 +57,34 @@ export const useSaveTodoQuery = (onSuccess?: () => void) => {
       if (!todoMap) return;
 
       queryClient.setQueryData([TODOS_QUERY_KEY], { ...todoMap, [date]: todos });
+      onSuccess?.();
+    },
+  });
+};
+
+export type TodoSaveParamsWithRequiredDelete = Omit<TodoSaveParams, 'data'> & {
+  data: Omit<TodoSaveParams['data'], 'delete'> & {
+    delete: NonNullable<TodoSaveParams['data']['delete']>;
+  };
+};
+export const useRemoveTodoQery = (onSuccess?: () => void) => {
+  const queryClient = getQueryClient();
+  return useMutation({
+    mutationKey: [TODOS_QUERY_KEY],
+    mutationFn: async (todoSaveParams: TodoSaveParamsWithRequiredDelete) => {
+      const responseData = await saveTodoFetch(todoSaveParams);
+      if (isErrorResponse(responseData)) {
+        throw new Error(responseData.error);
+      }
+
+      return todoSaveParams.date;
+    },
+    onSuccess: (date: string) => {
+      const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
+      if (!(todoMap && todoMap[date])) return;
+
+      const deletedTodoMap = omit(todoMap, [date]);
+      queryClient.setQueryData([TODOS_QUERY_KEY], deletedTodoMap);
       onSuccess?.();
     },
   });
