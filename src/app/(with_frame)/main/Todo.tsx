@@ -2,10 +2,10 @@
 
 import { TodoList } from '@/app/(with_frame)/main/TodoList';
 import { useSessionQuery } from '@/core/query/session-query';
-import { useTodoMapQuery } from '@/core/query/todo-query';
 import { sortDate } from '@/core/utils/date';
 import { Divider, Stack } from '@mantine/core';
 import { useMemo } from 'react';
+import { useTodoMapQuery } from '@/core/query/todo-client-query';
 
 export function Todo() {
   const session = useSessionQuery();

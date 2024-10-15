@@ -5,17 +5,17 @@ import classes from '@/app/(with_frame)/main/TodoList.module.css';
 import { SaveTodoModal } from '@/components/save-todo/SaveTodoModal';
 import { ModalControlProvider } from '@/core/providers/ModalControl.context';
 import { useSessionQuery } from '@/core/query/session-query';
-import { TodoSaveParamsWithRequiredDelete, useRemoveTodoQery, useToggleTodoQuery } from '@/core/query/todo-query';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
 import { ChangeEvent, PropsWithChildren } from 'react';
+import { TodoSaveParamsWithRequiredDelete, useRemoveTodoQuery, useToggleTodoQuery } from '@/core/query/todo-client-query';
 
 export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; date: string }>) {
   const session = useSessionQuery();
   const [opened, { open, close }] = useDisclosure(false);
   const todoMutation = useToggleTodoQuery();
-  const todoRemoveMutation = useRemoveTodoQery();
+  const todoRemoveMutation = useRemoveTodoQuery();
 
   const onCheckboxHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const updatedTodo = todos.find((todo) => todo.id === e.target.id);
