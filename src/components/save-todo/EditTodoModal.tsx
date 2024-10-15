@@ -16,7 +16,7 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
   const [cacheTodos, setCacheTodos] = useState<Todo[]>(todos);
   const saveTodoMutation = useSaveTodoQuery(() => modalCtx?.close());
 
-  const submitHandler = async () => {
+  const onSubmitHandler = async () => {
     const date = ctx?.date;
     if (!date) return;
 
@@ -65,7 +65,7 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
               <SaveTodo.Date date={ctx.date} setDate={ctx.setDate} />
               <SaveTodo.Todos date={todoDateFormatter(ctx.date)} todos={cacheTodos} setTodos={setCacheTodos} />
             </Stack>
-            <Button mt={'md'} color="blue.5" onClick={submitHandler}>
+            <Button mt={'md'} color="blue.5" onClick={onSubmitHandler}>
               {saveTodoMutation.isPending ? 'Editing...' : 'Edit'}
             </Button>
           </Stack>

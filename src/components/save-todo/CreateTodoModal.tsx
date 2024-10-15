@@ -16,7 +16,7 @@ export const CreateTodoModal = () => {
   const [todos, setCacheTodos] = useState<Todo[]>([{ id: '', description: '', isComplete: false, date: '', createdAt: Date.now() }]);
   const saveTodoMutation = useSaveTodoQuery(() => modalCtx?.close());
 
-  const submitHandler = async () => {
+  const onSubmitHandler = async () => {
     const date = ctx?.date;
     if (!date) return;
 
@@ -52,7 +52,7 @@ export const CreateTodoModal = () => {
               <SaveTodo.Date date={ctx.date} setDate={ctx.setDate} />
               <SaveTodo.Todos date={todoDateFormatter(ctx.date)} todos={todos} setTodos={setCacheTodos} />
             </Stack>
-            <Button mt={'md'} color="blue.5" onClick={submitHandler}>
+            <Button mt={'md'} color="blue.5" onClick={onSubmitHandler}>
               {saveTodoMutation.isPending ? 'Adding...' : 'Add'}
             </Button>
           </Stack>

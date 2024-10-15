@@ -1,15 +1,14 @@
 'use client';
 
-import { Avatar, Divider, Group, Menu, Text, UnstyledButton } from '@mantine/core';
-import { IconLogout } from '@tabler/icons-react';
-import React from 'react';
 import { googleSignOut } from '@/core/auth/auth-action';
 import { useSessionQuery } from '@/core/query/session-query';
+import { Avatar, Divider, Group, Menu, Text, UnstyledButton } from '@mantine/core';
+import { IconLogout } from '@tabler/icons-react';
 
 export default function NavbarBottom() {
   const { data: session } = useSessionQuery();
 
-  const singOutHandler = async () => await googleSignOut();
+  const onSingOutHandler = async () => await googleSignOut();
 
   if (!session) {
     return null;
@@ -29,7 +28,7 @@ export default function NavbarBottom() {
             </UnstyledButton>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item leftSection={<IconLogout size={14} />} style={{ color: 'red' }} onClick={singOutHandler}>
+            <Menu.Item leftSection={<IconLogout size={14} />} style={{ color: 'red' }} onClick={onSingOutHandler}>
               Logout
             </Menu.Item>
           </Menu.Dropdown>

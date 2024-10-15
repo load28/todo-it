@@ -1,8 +1,8 @@
+import { Todo } from '@/api/todo';
 import { ActionIcon, Group, Input, Stack, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { ChangeEvent } from 'react';
 import { IconSquareRoundedPlus, IconSquareRoundedX } from '@tabler/icons-react';
-import { Todo } from '@/api/todo';
+import { ChangeEvent } from 'react';
 
 export const SaveTodo = {
   Date: ({ date, setDate }: { date: Date; setDate: (date: Date | null) => void }) => {
@@ -21,7 +21,7 @@ export const SaveTodo = {
     );
   },
   Todos: ({ date, todos, setTodos }: { date: string; todos: Todo[]; setTodos: (value: Todo[]) => void }) => {
-    const changeHandler = (index: number, value: ChangeEvent<HTMLInputElement>) => {
+    const onChangeHandler = (index: number, value: ChangeEvent<HTMLInputElement>) => {
       if (!value) {
         return;
       }
@@ -31,7 +31,7 @@ export const SaveTodo = {
       setTodos(newTodos);
     };
 
-    const deleteHandler = (index: number) => {
+    const onDeleteHandler = (index: number) => {
       if (!todos) {
         return;
       }
@@ -45,7 +45,7 @@ export const SaveTodo = {
       setTodos(newTodos);
     };
 
-    const addHandler = () => {
+    const onAddHandler = () => {
       setTodos([...todos, { id: '', date, description: '', isComplete: false, createdAt: Date.now() }]);
     };
 
@@ -60,17 +60,17 @@ export const SaveTodo = {
               <Input.Wrapper flex={1}>
                 <Input
                   value={todo.description}
-                  onChange={(value) => changeHandler(index, value)}
+                  onChange={(value) => onChangeHandler(index, value)}
                   data-autofocus={index === 0 || undefined}
                 />
               </Input.Wrapper>
-              <ActionIcon size={'sm'} color={'red.5'} variant={'subtle'} onClick={() => deleteHandler(index)}>
+              <ActionIcon size={'sm'} color={'red.5'} variant={'subtle'} onClick={() => onDeleteHandler(index)}>
                 <IconSquareRoundedX />
               </ActionIcon>
             </Group>
           );
         })}
-        <ActionIcon variant={'subtle'} ml={'auto'} mr={'auto'} color={'gray.5'} onClick={addHandler}>
+        <ActionIcon variant={'subtle'} ml={'auto'} mr={'auto'} color={'gray.5'} onClick={onAddHandler}>
           <IconSquareRoundedPlus />
         </ActionIcon>
       </Stack>

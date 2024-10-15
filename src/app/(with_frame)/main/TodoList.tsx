@@ -1,11 +1,11 @@
 'use client';
 
-import { Todo } from '@/api/todo';
+import { Todo, TodoSaveParams } from '@/api/todo';
 import classes from '@/app/(with_frame)/main/TodoList.module.css';
 import { SaveTodoModal } from '@/components/save-todo/SaveTodoModal';
 import { ModalControlProvider } from '@/core/providers/ModalControl.context';
 import { useSessionQuery } from '@/core/query/session-query';
-import { useToggleTodoQuery } from '@/core/query/todo-query';
+import { useSaveTodoQuery, useToggleTodoQuery } from '@/core/query/todo-query';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
@@ -15,8 +15,9 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
   const session = useSessionQuery();
   const [opened, { open, close }] = useDisclosure(false);
   const todoMutation = useToggleTodoQuery();
+  const todoSaveMutation = useSaveTodoQuery();
 
-  const checkboxHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const onCheckboxHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const updatedTodo = todos.find((todo) => todo.id === e.target.id);
     if (!updatedTodo) {
       return;
@@ -29,7 +30,11 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
       data: { update: [{ ...updatedTodo, isComplete: !updatedTodo.isComplete }] },
     });
   };
-  const editHandler = () => open();
+  const onEditHandler = () => open();
+  const onDeletehander = () => {
+    const todoSaveParams: TodoSaveParams = { userId: session.data.id, date, data: { delete: todos.map((todo) => todo.id) } };
+    todoSaveMutation.mutate(todoSaveParams);
+  };
 
   return (
     <div>
@@ -49,10 +54,10 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
             </ActionIcon>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item leftSection={<IconEdit size={14} />} onClick={editHandler}>
+            <Menu.Item leftSection={<IconEdit size={14} />} onClick={onEditHandler}>
               Edit
             </Menu.Item>
-            <Menu.Item leftSection={<IconTrash size={14} />} style={{ color: 'red' }}>
+            <Menu.Item leftSection={<IconTrash size={14} />} style={{ color: 'red' }} onClick={onDeletehander}>
               Delete
             </Menu.Item>
           </Menu.Dropdown>
@@ -63,7 +68,7 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
           return (
             <label key={todo.id} className={classes.todoLabel} htmlFor={todo.id}>
               <Group align={'flex-start'} wrap={'nowrap'} gap={8} className={classes.todoContainer}>
-                <Checkbox id={todo.id} color={'gray.5'} size={'xs'} pt={2} checked={todo.isComplete} onChange={checkboxHandler} />
+                <Checkbox id={todo.id} color={'gray.5'} size={'xs'} pt={2} checked={todo.isComplete} onChange={onCheckboxHandler} />
                 <Stack gap={12} flex={1}>
                   <Group justify={'space-between'} align={'flex-start'} wrap={'nowrap'}>
                     <Text
