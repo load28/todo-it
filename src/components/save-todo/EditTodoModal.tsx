@@ -20,7 +20,12 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
     const date = ctx?.date;
     if (!date) return;
 
-    const trimmedTodos = cacheTodos.map((todo) => ({ ...todo, description: todo.description.trim() }));
+    const trimmedTodos = cacheTodos
+      .filter((todo) => !!todo.description)
+      .map((todo) => ({
+        ...todo,
+        description: todo.description.trim(),
+      }));
     const todoParam: TodoSaveParams = {
       userId: session.data.id,
       date: todoDateFormatter(date),

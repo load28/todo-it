@@ -6,7 +6,6 @@ import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.cont
 import { useModalControlContext } from '@/core/providers/ModalControl.context';
 import { useSessionQuery } from '@/core/query/session-query';
 import { Button, Modal, Stack } from '@mantine/core';
-import { isNotNil } from 'es-toolkit';
 import { useState } from 'react';
 import { useSaveTodoQuery } from '@/core/query/todo-client-query';
 
@@ -34,7 +33,7 @@ export const CreateTodoModal = () => {
       date: todoDateFormatter(date),
       data: {
         create: todos
-          .filter(isNotNil)
+          .filter((todo) => !!todo.description)
           .map((todo) => ({ isComplete: false, createdAt: todo.createdAt, description: todo.description.trim() })),
       },
     };
