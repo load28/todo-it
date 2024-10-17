@@ -6,7 +6,7 @@ import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.cont
 import { useModalControlContext } from '@/core/providers/ModalControl.context';
 import { useSessionQuery } from '@/core/query/session-query';
 import { Button, Modal, Stack } from '@mantine/core';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSaveTodoQuery } from '@/core/query/todo-client-query';
 
 export const CreateTodoModal = () => {
@@ -23,10 +23,11 @@ export const CreateTodoModal = () => {
     },
   ]);
   const saveTodoMutation = useSaveTodoQuery(() => modalCtx?.close());
+  const submitValidation = useMemo(() => todos.some((todo) => !!todo.description), [todos]);
 
   const onSubmitHandler = async () => {
     const date = ctx?.date;
-    if (!date) return;
+    if (!(date && submitValidation)) return;
 
     const todoParam: TodoSaveParams = {
       userId: session.data.id,
@@ -60,7 +61,7 @@ export const CreateTodoModal = () => {
               <SaveTodo.Date date={ctx.date} setDate={ctx.setDate} />
               <SaveTodo.Todos date={todoDateFormatter(ctx.date)} todos={todos} setTodos={setCacheTodos} />
             </Stack>
-            <Button mt={'md'} color="blue.5" onClick={onSubmitHandler}>
+            <Button mt={'md'} color="blue.5" onClick={onSubmitHandler} disabled={!submitValidation}>
               {saveTodoMutation.isPending ? 'Adding...' : 'Add'}
             </Button>
           </Stack>
