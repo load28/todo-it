@@ -66,7 +66,7 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
           </Menu.Dropdown>
         </Menu>
       </Group>
-      <Stack gap={8} pt={16} pb={16} pl={8} pr={8}>
+      <Stack gap={4} pt={16} pb={16} pl={8} pr={8}>
         {todos.map((todo) => {
           return (
             <label key={todo.id} className={classes.todoLabel} htmlFor={todo.id}>
