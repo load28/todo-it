@@ -1,5 +1,3 @@
-import { dbDocument } from '@/core/db/dynamoDB';
-import { utcDayjs } from '@/core/utils/date';
 import { TransactWriteItemsCommand } from '@aws-sdk/client-dynamodb';
 import { QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { marshall } from '@aws-sdk/util-dynamodb';
@@ -7,6 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { v4 } from 'uuid';
 import { z } from 'zod';
 import { ApiResponse } from './types';
+import { utcDayjs } from '@todo-it/core/utils/date';
+import { dbDocument } from '@todo-it/core/db/dynamoDB';
 
 export const todoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
 export const todoDateFormatter = (date: Date) => utcDayjs(date).format('YYYY-MM-DD');
@@ -77,7 +77,12 @@ export async function saveTodos(req: Request): Promise<ApiResponse<Todo[]>> {
 
     const { userId, date, data } = saveParseData.data;
     const createData: Todo[] = data.create?.map((todo) => ({ ...todo, date, id: v4() })) || [];
-    const createTransactItems = createData.map((todo) => ({ Put: { TableName: 'todo', Item: marshall({ ...todo, userId }) } }));
+    const createTransactItems = createData.map((todo) => ({
+      Put: {
+        TableName: 'todo',
+        Item: marshall({ ...todo, userId }),
+      },
+    }));
     const updateData = data.update || [];
     const updateTransactItems = updateData.map((todo) => ({
       Update: {
@@ -94,7 +99,13 @@ export async function saveTodos(req: Request): Promise<ApiResponse<Todo[]>> {
         }),
       },
     }));
-    const deleteTransactItems = data.delete?.map((id) => ({ Delete: { TableName: 'todo', Key: marshall({ id, date }) } })) || [];
+    const deleteTransactItems =
+      data.delete?.map((id) => ({
+        Delete: {
+          TableName: 'todo',
+          Key: marshall({ id, date }),
+        },
+      })) || [];
 
     const transactItems = [...createTransactItems, ...updateTransactItems, ...deleteTransactItems];
     await dbDocument.send(new TransactWriteItemsCommand({ TransactItems: transactItems }));

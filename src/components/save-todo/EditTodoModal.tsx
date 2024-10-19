@@ -1,13 +1,13 @@
 'use client';
 
-import { Todo, todoDateFormatter, TodoSaveParams } from '@/api/todo';
-import { SaveTodo } from '@/components/save-todo/SaveTodo';
-import { useSaveTodoDataContext } from '@/components/save-todo/SaveTodoData.context';
-import { useModalControlContext } from '@/core/providers/ModalControl.context';
-import { useSessionQuery } from '@/core/query/session-query';
 import { Button, Modal, Stack } from '@mantine/core';
 import { PropsWithoutRef, useMemo, useState } from 'react';
-import { useSaveTodoQuery } from '@/core/query/todo-client-query';
+import { useSessionQuery } from '@todo-it/core/query/session-query';
+import { Todo, todoDateFormatter, TodoSaveParams } from '@todo-it/api/todo';
+import { SaveTodo } from '@todo-it/components/save-todo/SaveTodo';
+import { useSaveTodoDataContext } from '@todo-it/components/save-todo/SaveTodoData.context';
+import { useModalControlContext } from '@todo-it/core/providers/ModalControl.context';
+import { useSaveTodoQuery } from '@todo-it/core/query/todo-client-query';
 
 export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
   const session = useSessionQuery();

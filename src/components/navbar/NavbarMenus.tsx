@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 
 const data = [{ link: '/main', label: 'Todo', icon: IconList }];
 
-export default function NavbarMenus() {
+export function NavbarMenus() {
   const currentPath = usePathname();
 
   return (

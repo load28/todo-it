@@ -1,8 +1,8 @@
-import { Todo } from '@/api/todo';
 import { ActionIcon, Group, Input, Stack, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { IconSquareRoundedPlus, IconSquareRoundedX } from '@tabler/icons-react';
 import { ChangeEvent } from 'react';
+import { Todo } from '@todo-it/api/todo';
 
 export const SaveTodo = {
   Date: ({ date, setDate }: { date: Date; setDate: (date: Date | null) => void }) => {

@@ -1,6 +1,6 @@
-import { auth } from '@/core/auth/auth';
 import { QueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { z } from 'zod';
+import { auth } from '@todo-it/core/auth/auth';
 
 const TodoItSessionInfoSchema = z.object({ id: z.string(), email: z.string().email(), image: z.string().url() });
 export type TodoItSessionInfo = z.infer<typeof TodoItSessionInfoSchema>;

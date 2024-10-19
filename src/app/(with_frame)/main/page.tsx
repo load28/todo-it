@@ -1,9 +1,9 @@
-import { Todo } from '@/app/(with_frame)/main/Todo';
-import { todoMapQueryPrefetch } from '@/core/query/todo-query';
-import { getQueryClient } from '@/core/providers/query/query-utils';
 import { HydrationBoundary } from '@tanstack/react-query';
 import { dehydrate } from '@tanstack/query-core';
-import { auth } from '@/core/auth/auth';
+import { getQueryClient } from '@todo-it/core/providers/query/query-utils';
+import { auth } from '@todo-it/core/auth/auth';
+import { todoMapQueryPrefetch } from '@todo-it/core/query/todo-query';
+import { Todo } from '@todo-it/app/(with_frame)/main/Todo';
 
 export default async function Page() {
   const queryClient = getQueryClient();

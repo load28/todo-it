@@ -1,10 +1,11 @@
 'use client';
-import { getQueryClient } from '@/core/providers/query/query-utils';
+
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Todo, TodoSaveParams } from '@/api/todo';
-import { isErrorResponse } from '@/api/types';
 import { omit } from 'es-toolkit';
-import { saveTodoFetch, TodoMap, todoMapQueryOptions, TODOS_QUERY_KEY } from '@/core/query/todo-query';
+import { getQueryClient } from '@todo-it/core/providers/query/query-utils';
+import { Todo, TodoSaveParams } from '@todo-it/api/todo';
+import { isErrorResponse } from '@todo-it/api/types';
+import { saveTodoFetch, TodoMap, todoMapQueryOptions, TODOS_QUERY_KEY } from '@todo-it/core/query/todo-query';
 
 export const useTodoMapQuery = (userId: string) => useQuery(todoMapQueryOptions(userId));
 export const useSaveTodoQuery = (onSuccess?: () => void) => {

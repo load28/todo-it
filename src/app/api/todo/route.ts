@@ -1,3 +1,3 @@
-import { saveTodos, getTodos } from '@/api/todo';
+import { getTodos, saveTodos } from '@todo-it/api/todo';
 
 export { getTodos as GET, saveTodos as POST };

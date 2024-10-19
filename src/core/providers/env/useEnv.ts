@@ -1,8 +1,8 @@
 'use client';
 
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Env, EnvContext } from '@/core/providers/env/env-context';
 import { flow } from 'es-toolkit';
+import { Env, EnvContext } from '@todo-it/core/providers/env/env-context';
 
 const CLIENT_ENV_PREFIX = 'NEXT_PUBLIC_';
 

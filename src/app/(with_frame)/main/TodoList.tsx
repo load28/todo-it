@@ -1,15 +1,15 @@
 'use client';
 
-import { Todo } from '@/api/todo';
 import classes from '@/app/(with_frame)/main/TodoList.module.css';
-import { SaveTodoModal } from '@/components/save-todo/SaveTodoModal';
-import { ModalControlProvider } from '@/core/providers/ModalControl.context';
-import { useSessionQuery } from '@/core/query/session-query';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
 import { ChangeEvent, PropsWithChildren } from 'react';
-import { TodoSaveParamsWithRequiredDelete, useRemoveTodoQuery, useToggleTodoQuery } from '@/core/query/todo-client-query';
+import { useSessionQuery } from '@todo-it/core/query/session-query';
+import { TodoSaveParamsWithRequiredDelete, useRemoveTodoQuery, useToggleTodoQuery } from '@todo-it/core/query/todo-client-query';
+import { ModalControlProvider } from '@todo-it/core/providers/ModalControl.context';
+import { SaveTodoModal } from '@todo-it/components/save-todo/SaveTodoModal';
+import { Todo } from '@todo-it/api/todo';
 
 export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; date: string }>) {
   const session = useSessionQuery();

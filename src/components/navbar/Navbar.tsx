@@ -1,11 +1,11 @@
-import { NavbarHeader } from '@/components/navbar/NavbarHeader';
 import { Group, Stack } from '@mantine/core';
 import React from 'react';
 import classes from './Navbar.module.css';
-import NavbarBottom from '@/components/navbar/NavbarBottom';
-import NavbarMenus from '@/components/navbar/NavbarMenus';
+import { NavbarHeader } from '@todo-it/components/navbar/NavbarHeader';
+import { NavbarMenus } from '@todo-it/components/navbar/NavbarMenus';
+import { NavbarBottom } from '@todo-it/components/navbar/NavbarBottom';
 
-export default function Navbar() {
+export function Navbar() {
   return (
     <nav className={classes.navbar}>
       <Stack flex={'1'} gap={64} justify={'space-between'}>

@@ -1,11 +1,11 @@
 'use client';
 
-import { googleSignOut } from '@/core/auth/auth-action';
-import { useSessionQuery } from '@/core/query/session-query';
 import { Avatar, Divider, Group, Menu, Text, UnstyledButton } from '@mantine/core';
 import { IconLogout } from '@tabler/icons-react';
+import { useSessionQuery } from '@todo-it/core/query/session-query';
+import { googleSignOut } from '@todo-it/core/auth/auth-action';
 
-export default function NavbarBottom() {
+export function NavbarBottom() {
   const { data: session } = useSessionQuery();
 
   const onSingOutHandler = async () => await googleSignOut();

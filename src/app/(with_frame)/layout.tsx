@@ -1,9 +1,9 @@
 import { Stack } from '@mantine/core';
-import { getQueryClient } from '@/core/providers/query/query-utils';
-import { sessionQueryPrefetch } from '@/core/query/session-query';
 import { HydrationBoundary } from '@tanstack/react-query';
 import { dehydrate } from '@tanstack/query-core';
-import Navbar from '@/components/navbar/Navbar';
+import { getQueryClient } from '@todo-it/core/providers/query/query-utils';
+import { sessionQueryPrefetch } from '@todo-it/core/query/session-query';
+import { Navbar } from '@todo-it/components/navbar/Navbar';
 
 export default async function layout({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();

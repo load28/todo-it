@@ -1,5 +1,5 @@
-import { auth } from '@/core/auth/auth';
 import { NextResponse } from 'next/server';
+import { auth } from '@todo-it/core/auth/auth';
 
 export default auth((req) => {
   if (!req.auth) {

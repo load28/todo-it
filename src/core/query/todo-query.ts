@@ -1,6 +1,6 @@
-import { Todo, TodoSaveParams } from '@/api/todo';
-import { ApiResponseData, isErrorResponse } from '@/api/types';
 import { QueryClient, queryOptions } from '@tanstack/react-query';
+import { ApiResponseData, isErrorResponse } from '@todo-it/api/types';
+import { Todo, TodoSaveParams } from '@todo-it/api/todo';
 
 export const TODOS_QUERY_KEY = 'todos';
 export type TodoMap = Record<string, Todo[] | undefined>;

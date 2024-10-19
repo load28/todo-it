@@ -1,11 +1,11 @@
 'use client';
 
-import { SaveTodoModal } from '@/components/save-todo/SaveTodoModal';
-import { ModalControlProvider } from '@/core/providers/ModalControl.context';
 import { ActionIcon, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconSquareRoundedPlus } from '@tabler/icons-react';
 import React from 'react';
+import { ModalControlProvider } from '@todo-it/core/providers/ModalControl.context';
+import { SaveTodoModal } from '@todo-it/components/save-todo/SaveTodoModal';
 
 export function NavbarHeader() {
   const [opened, { open, close }] = useDisclosure(false);
