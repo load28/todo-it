@@ -1,6 +1,6 @@
 'use client';
 
-import classes from '@/app/(with_frame)/main/TodoList.module.css';
+import classes from '@todo-it/app/(with_frame)/main/TodoList.module.css';
 import { ActionIcon, Checkbox, Group, Menu, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
