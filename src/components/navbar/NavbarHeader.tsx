@@ -2,7 +2,7 @@
 
 import { ActionIcon, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconSquareRoundedPlus } from '@tabler/icons-react';
+import { IconEdit } from '@tabler/icons-react';
 import React from 'react';
 import { ModalControlProvider } from '@todo-it/core/providers/ModalControl.context';
 import { SaveTodoModal } from '@todo-it/components/save-todo/SaveTodoModal';
@@ -21,7 +21,7 @@ export function NavbarHeader() {
         </ModalControlProvider>
       )}
       <ActionIcon size={'sm'} variant={'subtle'} color={'gray.6'} onClick={open}>
-        <IconSquareRoundedPlus />
+        <IconEdit />
       </ActionIcon>
     </>
   );
