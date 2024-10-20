@@ -65,6 +65,13 @@ export const useRemoveTodoQuery = (onSuccess?: () => void) => {
  * 2. Saves the changes to the server in the background
  * 3. Rolls back to the previous state if an error occurs
  */
+
+export type TodoToggleParams = Omit<TodoSaveParams, 'data'> & {
+  data: Omit<TodoSaveParams['data'], 'delete'> & {
+    update: NonNullable<TodoSaveParams['data']['update']>[number];
+  };
+};
+
 export const useToggleTodoQuery = () => {
   const queryClient = getQueryClient();
   return useMutation({
