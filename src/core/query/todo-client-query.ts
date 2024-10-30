@@ -68,7 +68,7 @@ export const useRemoveTodoQuery = (onSuccess?: () => void) => {
 
 export type TodoToggleParams = Omit<TodoSaveParams, 'data'> & {
   data: Omit<TodoSaveParams['data'], 'delete'> & {
-    update: NonNullable<TodoSaveParams['data']['update']>[number];
+    update: NonNullable<TodoSaveParams['data']['update']>;
   };
 };
 
@@ -76,7 +76,7 @@ export const useToggleTodoQuery = () => {
   const queryClient = getQueryClient();
   return useMutation({
     mutationKey: [TODOS_QUERY_KEY],
-    mutationFn: async (todoSaveParams: TodoSaveParams): Promise<{ date: string; result: Todo[] }> => {
+    mutationFn: async (todoSaveParams: TodoToggleParams): Promise<{ date: string; result: Todo[] }> => {
       const responseData = await saveTodoFetch(todoSaveParams);
       if (isErrorResponse(responseData)) {
         throw new Error(responseData.error);
@@ -84,7 +84,7 @@ export const useToggleTodoQuery = () => {
 
       return { date: todoSaveParams.date, result: responseData.data };
     },
-    onMutate: (todoSaveParams: TodoSaveParams) => {
+    onMutate: (todoSaveParams: TodoToggleParams) => {
       const date = todoSaveParams.date;
       const previousTodoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
       if (!(previousTodoMap && previousTodoMap[date] && todoSaveParams.data.update)) return;
