@@ -9,4 +9,4 @@ export default auth((req) => {
   return NextResponse.next();
 });
 
-export const config = { matcher: ['/main', '/settings'] };
+export const config = { matcher: ['/main'] };
