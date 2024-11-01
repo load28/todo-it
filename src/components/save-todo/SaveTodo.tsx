@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Input, Stack, Text } from '@mantine/core';
+import { ActionIcon, Group, Input, List, Stack, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { Todo } from '@todo-it/api/todo';
@@ -76,7 +76,7 @@ export const SaveTodo = {
             </ActionIcon>
           </Group>
         </Stack>
-        <Stack gap={'xs'}>
+        <Stack gap={'md'}>
           <Text size={'sm'} fw={'bold'}>
             Todos
           </Text>
@@ -85,25 +85,20 @@ export const SaveTodo = {
               Add your Todo
             </Text>
           ) : (
-            todos.map((todo, index) => {
-              return (
-                <Group key={index} h={32} gap={'sm'} pl={'xs'}>
-                  <Text size={'sm'} flex={1}>
-                    {todo.description}
-                  </Text>
-                  <ActionIcon
-                    size={'sm'}
-                    variant={'subtle'}
-                    ml={'auto'}
-                    mr={'auto'}
-                    color={'gray.5'}
-                    onClick={() => onDeleteHandler(index)}
-                  >
-                    <IconTrash />
-                  </ActionIcon>
-                </Group>
-              );
-            })
+            <List withPadding size={'sm'}>
+              {todos.map((todo, index) => {
+                return (
+                  <Group key={todo.id} mb={'xs'}>
+                    <List.Item key={todo.id} flex={1}>
+                      {todo.description}
+                    </List.Item>
+                    <ActionIcon size={'sm'} variant={'subtle'} ml={'auto'} color={'gray.5'} onClick={() => onDeleteHandler(index)}>
+                      <IconTrash />
+                    </ActionIcon>
+                  </Group>
+                );
+              })}
+            </List>
           )}
         </Stack>
       </Stack>

@@ -15,7 +15,6 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
   const modalCtx = useModalControlContext();
   const [cacheTodos, setCacheTodos] = useState<Todo[]>(todos);
   const saveTodoMutation = useSaveTodoQuery(() => modalCtx?.close());
-  // const submitValidation = useMemo(() => cacheTodos.some((todo) => !!todo.description), [cacheTodos]);
 
   const onSubmitHandler = async () => {
     const date = ctx?.date;

@@ -11,13 +11,14 @@ import { CreateTodoModal } from '@todo-it/components/save-todo/CreateTodoModal';
 
 export function SaveTodoModal({ date }: PropsWithoutRef<{ date: string }>) {
   const session = useSessionQuery();
-  const [cachedDate, setCachedDate] = useState<Date | null>(utcDayjs(date).toDate());
   const { data: todoMap } = useTodoMapQuery(session.data.id);
-  const todos = useMemo(() => (cachedDate ? todoMap?.[todoDateFormatter(cachedDate)] : undefined), [todoMap, cachedDate]);
+  const [cachedDate, setCachedDate] = useState<Date | null>(utcDayjs(date).toDate());
+  const formatedDate = useMemo(() => (cachedDate ? todoDateFormatter(cachedDate) : undefined), [cachedDate]);
+  const todos = useMemo(() => (formatedDate ? todoMap?.[formatedDate] : undefined), [todoMap, formatedDate]);
 
   return (
     <SaveTodoDataProvider value={{ date: cachedDate, setDate: setCachedDate }}>
-      {todos ? <EditTodoModal todos={todos} /> : <CreateTodoModal />}
+      {todos ? <EditTodoModal key={formatedDate} todos={todos} /> : <CreateTodoModal key={formatedDate} />}
     </SaveTodoDataProvider>
   );
 }
