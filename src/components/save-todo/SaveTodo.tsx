@@ -88,7 +88,7 @@ export const SaveTodo = {
             <List withPadding size={'sm'}>
               {todos.map((todo, index) => {
                 return (
-                  <Group key={todo.id} mb={'xs'}>
+                  <Group key={index} mb={'xs'}>
                     <List.Item key={todo.id} flex={1}>
                       {todo.description}
                     </List.Item>
