@@ -6,7 +6,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconDotsVertical, IconEdit, IconTrash } from '@tabler/icons-react';
 import { ChangeEvent, PropsWithChildren } from 'react';
 import { useSessionQuery } from '@todo-it/core/query/session-query';
-import { TodoSaveParamsWithRequiredDelete, useRemoveTodoQuery, useToggleTodoQuery } from '@todo-it/core/query/todo-client-query';
+import { TodoSaveRemoveParams, useRemoveTodoQuery, useToggleTodoQuery } from '@todo-it/core/query/todo-client-query';
 import { ModalControlProvider } from '@todo-it/core/providers/ModalControl.context';
 import { SaveTodoModal } from '@todo-it/components/save-todo/SaveTodoModal';
 import { Todo } from '@todo-it/api/todo';
@@ -31,7 +31,7 @@ export function TodoList({ todos, date }: PropsWithChildren<{ todos: Todo[]; dat
   };
   const onEditHandler = () => open();
   const onDeleteHandler = () => {
-    const todoSaveParams: TodoSaveParamsWithRequiredDelete = {
+    const todoSaveParams: TodoSaveRemoveParams = {
       date,
       userId: session.data.id,
       data: { delete: todos.map((todo) => todo.id) },

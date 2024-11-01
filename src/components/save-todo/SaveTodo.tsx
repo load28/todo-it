@@ -3,6 +3,7 @@ import { DatePickerInput } from '@mantine/dates';
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { Todo } from '@todo-it/api/todo';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
+import { v4 } from 'uuid';
 
 export const SaveTodo = {
   Date: ({ date, setDate }: { date: Date; setDate: (date: Date | null) => void }) => {
@@ -50,7 +51,7 @@ export const SaveTodo = {
     const onAddHandler = () => {
       if (!newDescription) return;
 
-      setTodos([...todos, { id: '', date, description: newDescription, isComplete: false, createdAt: Date.now() }]);
+      setTodos([...todos, { id: v4(), date, description: newDescription, isComplete: false, createdAt: Date.now() }]);
       setNewDescription('');
     };
 
@@ -88,7 +89,7 @@ export const SaveTodo = {
             <List withPadding size={'sm'}>
               {todos.map((todo, index) => {
                 return (
-                  <Group key={index} mb={'xs'}>
+                  <Group key={todo.id} mb={'xs'}>
                     <List.Item key={todo.id} flex={1}>
                       {todo.description}
                     </List.Item>

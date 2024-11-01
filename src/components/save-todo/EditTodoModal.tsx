@@ -31,7 +31,7 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
       date: todoDateFormatter(date),
       data: {
         create: trimmedTodos
-          .filter((todo) => !todo.id)
+          .filter((todo) => !todos.some((t) => t.id === todo.id))
           .map((todo) => {
             return {
               description: todo.description,
@@ -40,7 +40,7 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
             };
           }),
         update: trimmedTodos
-          .filter((todo) => todo.id)
+          .filter((todo) => todos.some((t) => t.id === todo.id))
           .map((todo) => {
             return {
               id: todo.id,
@@ -49,7 +49,7 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
               createdAt: todo.createdAt,
             };
           }),
-        delete: todos.filter((todo) => trimmedTodos.every((cacheTodo) => cacheTodo.id !== todo.id)).map((todo) => todo.id),
+        delete: todos.filter((todo) => !trimmedTodos.some((cacheTodo) => cacheTodo.id === todo.id)).map((todo) => todo.id),
       },
     };
 

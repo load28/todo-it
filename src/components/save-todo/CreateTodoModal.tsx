@@ -25,9 +25,7 @@ export const CreateTodoModal = () => {
       userId: session.data.id,
       date: todoDateFormatter(date),
       data: {
-        create: todos
-          .filter((todo) => !!todo.description)
-          .map((todo) => ({ isComplete: false, createdAt: todo.createdAt, description: todo.description.trim() })),
+        create: todos.map((todo) => ({ isComplete: false, createdAt: todo.createdAt, description: todo.description.trim() })),
       },
     };
     saveTodoMutation.mutate(todoParam);

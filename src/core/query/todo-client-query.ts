@@ -34,8 +34,8 @@ export const useSaveTodoQuery = (onSuccess?: () => void) => {
     },
   });
 };
-export type TodoSaveParamsWithRequiredDelete = Omit<TodoSaveParams, 'data'> & {
-  data: Omit<TodoSaveParams['data'], 'delete'> & {
+export type TodoSaveRemoveParams = Omit<TodoSaveParams, 'data'> & {
+  data: Omit<TodoSaveParams['data'], 'create' | 'update'> & {
     delete: NonNullable<TodoSaveParams['data']['delete']>;
   };
 };
@@ -43,7 +43,7 @@ export const useRemoveTodoQuery = (onSuccess?: () => void) => {
   const queryClient = getQueryClient();
   return useMutation({
     mutationKey: [TODOS_QUERY_KEY],
-    mutationFn: async (todoSaveParams: TodoSaveParamsWithRequiredDelete) => {
+    mutationFn: async (todoSaveParams: TodoSaveRemoveParams) => {
       const responseData = await saveTodoFetch(todoSaveParams);
       if (isErrorResponse(responseData)) {
         throw new Error(responseData.error);
