@@ -26,29 +26,34 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
         ...todo,
         description: todo.description.trim(),
       }));
+
+    const create: TodoSaveParams['data']['create'] = [];
+    const update: TodoSaveParams['data']['update'] = [];
+    for (const todo of trimmedTodos) {
+      const findTodo = todos.some((t) => t.id === todo.id);
+
+      if (findTodo) {
+        update.push({
+          id: todo.id,
+          description: todo.description,
+          isComplete: todo.isComplete,
+          createdAt: todo.createdAt,
+        });
+      } else {
+        create.push({
+          description: todo.description,
+          isComplete: todo.isComplete,
+          createdAt: todo.createdAt,
+        });
+      }
+    }
+
     const todoParam: TodoSaveParams = {
       userId: session.data.id,
       date: todoDateFormatter(date),
       data: {
-        create: trimmedTodos
-          .filter((todo) => !todos.some((t) => t.id === todo.id))
-          .map((todo) => {
-            return {
-              description: todo.description,
-              isComplete: todo.isComplete,
-              createdAt: todo.createdAt,
-            };
-          }),
-        update: trimmedTodos
-          .filter((todo) => todos.some((t) => t.id === todo.id))
-          .map((todo) => {
-            return {
-              id: todo.id,
-              description: todo.description,
-              isComplete: todo.isComplete,
-              createdAt: todo.createdAt,
-            };
-          }),
+        create,
+        update,
         delete: todos.filter((todo) => !trimmedTodos.some((cacheTodo) => cacheTodo.id === todo.id)).map((todo) => todo.id),
       },
     };
