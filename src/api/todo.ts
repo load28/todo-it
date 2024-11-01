@@ -13,7 +13,7 @@ export const todoDateFormatter = (date: Date) => utcDayjs(date).format('YYYY-MM-
 const TodoDateStringSchema = z.string().regex(todoDateRegex, {
   message: "Invalid date format. Expected 'YYYY-MM-DD'.",
 });
-// TODO 백엔드와 클라이언트간의 인터페이스 분리가 필요함
+
 export const TodoSchema = z.object({
   id: z.string(),
   date: TodoDateStringSchema,
@@ -22,7 +22,7 @@ export const TodoSchema = z.object({
   createdAt: z.number(),
 });
 export type Todo = z.infer<typeof TodoSchema>;
-// TODO 추후 모든 todo 데이터 안에 date를 넣어서 서로 다른 날짜의 todo를 한번에 저장할 수 있도록 변경
+
 export const TodoSaveParamsSchema = z.object({
   userId: z.string(),
   date: TodoDateStringSchema,
@@ -51,7 +51,6 @@ export async function getTodos(req: NextRequest): Promise<ApiResponse<Todo[]>> {
     }),
   );
 
-  // TODO 함수를 안정하게 정의해야함
   const responseData: Todo[] =
     Items?.map((item) => {
       return {
