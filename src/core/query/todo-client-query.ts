@@ -14,7 +14,6 @@ export const useSaveTodoQuery = (onSuccess?: () => void) => {
     mutationKey: [TODOS_QUERY_KEY],
     mutationFn: async (todoSaveParams: TodoSaveParams) => {
       const responseData = await saveTodoFetch(todoSaveParams);
-      // TODO 에러 핸들링을 해야함
       if (isErrorResponse(responseData)) {
         throw new Error(responseData.error);
       }
@@ -25,7 +24,12 @@ export const useSaveTodoQuery = (onSuccess?: () => void) => {
       const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
       if (!todoMap) return;
 
-      queryClient.setQueryData([TODOS_QUERY_KEY], { ...todoMap, [date]: todos });
+      if (todos.length === 0) {
+        queryClient.setQueryData([TODOS_QUERY_KEY], omit(todoMap, [date]));
+      } else {
+        queryClient.setQueryData([TODOS_QUERY_KEY], { ...todoMap, [date]: todos });
+      }
+
       onSuccess?.();
     },
   });
@@ -51,8 +55,7 @@ export const useRemoveTodoQuery = (onSuccess?: () => void) => {
       const todoMap = queryClient.getQueryData<TodoMap>([TODOS_QUERY_KEY]);
       if (!(todoMap && todoMap[date])) return;
 
-      const deletedTodoMap = omit(todoMap, [date]);
-      queryClient.setQueryData([TODOS_QUERY_KEY], deletedTodoMap);
+      queryClient.setQueryData([TODOS_QUERY_KEY], omit(todoMap, [date]));
       onSuccess?.();
     },
   });
@@ -103,7 +106,6 @@ export const useToggleTodoQuery = () => {
     },
     onError: (error, _, context: TodoMap | undefined) => {
       if (!context) return;
-      // TODO 에러를 캐치해서 sentry 같은 곳으로 보내거나, 사용자에게 알림을 띄워줄 수 있습니다.
       queryClient.setQueryData([TODOS_QUERY_KEY], context);
     },
   });

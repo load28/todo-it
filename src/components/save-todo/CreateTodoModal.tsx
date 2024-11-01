@@ -13,15 +13,7 @@ export const CreateTodoModal = () => {
   const session = useSessionQuery();
   const ctx = useSaveTodoDataContext();
   const modalCtx = useModalControlContext();
-  const [todos, setCacheTodos] = useState<Todo[]>([
-    {
-      id: '',
-      description: '',
-      isComplete: false,
-      date: '',
-      createdAt: Date.now(),
-    },
-  ]);
+  const [todos, setCacheTodos] = useState<Todo[]>([]);
   const saveTodoMutation = useSaveTodoQuery(() => modalCtx?.close());
   const submitValidation = useMemo(() => todos.some((todo) => !!todo.description), [todos]);
 

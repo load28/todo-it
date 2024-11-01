@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Modal, Stack } from '@mantine/core';
-import { PropsWithoutRef, useMemo, useState } from 'react';
+import { PropsWithoutRef, useState } from 'react';
 import { useSessionQuery } from '@todo-it/core/query/session-query';
 import { Todo, todoDateFormatter, TodoSaveParams } from '@todo-it/api/todo';
 import { SaveTodo } from '@todo-it/components/save-todo/SaveTodo';
@@ -15,11 +15,11 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
   const modalCtx = useModalControlContext();
   const [cacheTodos, setCacheTodos] = useState<Todo[]>(todos);
   const saveTodoMutation = useSaveTodoQuery(() => modalCtx?.close());
-  const submitValidation = useMemo(() => cacheTodos.some((todo) => !!todo.description), [cacheTodos]);
+  // const submitValidation = useMemo(() => cacheTodos.some((todo) => !!todo.description), [cacheTodos]);
 
   const onSubmitHandler = async () => {
     const date = ctx?.date;
-    if (!(date && submitValidation)) return;
+    if (!date) return;
 
     const trimmedTodos = cacheTodos
       .filter((todo) => !!todo.description)
@@ -71,7 +71,7 @@ export function EditTodoModal({ todos }: PropsWithoutRef<{ todos: Todo[] }>) {
               <SaveTodo.Date date={ctx.date} setDate={ctx.setDate} />
               <SaveTodo.Todos date={todoDateFormatter(ctx.date)} todos={cacheTodos} setTodos={setCacheTodos} />
             </Stack>
-            <Button mt={'md'} color="blue.5" onClick={onSubmitHandler} disabled={!submitValidation}>
+            <Button mt={'md'} color="blue.5" onClick={onSubmitHandler}>
               {saveTodoMutation.isPending ? 'Editing...' : 'Edit'}
             </Button>
           </Stack>
