@@ -67,7 +67,7 @@ export const useRemoveTodoQuery = (onSuccess?: () => void) => {
  */
 
 export type TodoToggleParams = Omit<TodoSaveParams, 'data'> & {
-  data: Omit<TodoSaveParams['data'], 'delete'> & {
+  data: Omit<TodoSaveParams['data'], 'create' | 'delete'> & {
     update: NonNullable<TodoSaveParams['data']['update']>;
   };
 };
