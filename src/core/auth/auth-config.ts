@@ -1,11 +1,11 @@
-import { NextAuthConfig } from 'next-auth';
-import Google from '@auth/core/providers/google';
 import { DynamoDBAdapter } from '@auth/dynamodb-adapter';
 import { dbDocument } from '@todo-it/core/db/dynamoDB';
+import { NextAuthConfig } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
 
 export const authConfig = {
   providers: [
-    Google({
+    GoogleProvider({
       clientId: process.env.NEXT_PUBLIC_AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
