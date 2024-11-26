@@ -1,8 +1,10 @@
+'use client';
+
 import { ActionIcon, Group, Input, List, Stack, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { ChangeEvent, KeyboardEvent, useState } from 'react';
-import { Todo } from '@todo-it/api/todo';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
+import { Todo } from '@todo-it/api/todo';
+import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { v4 } from 'uuid';
 
 export const SaveTodo = {
