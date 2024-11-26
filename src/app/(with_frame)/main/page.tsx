@@ -1,5 +1,4 @@
-import { dehydrate } from '@tanstack/query-core';
-import { HydrationBoundary } from '@tanstack/react-query';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { Todo } from '@todo-it/app/(with_frame)/main/Todo';
 import { auth } from '@todo-it/core/auth/auth';
 import { getQueryClient } from '@todo-it/core/providers/query/query-utils';

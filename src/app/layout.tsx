@@ -10,7 +10,7 @@ import { PropsWithChildren } from 'react';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Todo App',
+  title: 'Todo it',
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
