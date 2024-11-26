@@ -1,4 +1,4 @@
-import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Todo } from '@todo-it/app/(with_frame)/main/Todo';
 import { auth } from '@todo-it/core/auth/auth';
 import { getQueryClient } from '@todo-it/core/providers/query/query-utils';
@@ -10,7 +10,7 @@ export default async function Page() {
   const queryClient = getQueryClient();
   const session = await auth();
   if (!session?.user?.id) {
-    return null;
+    return undefined;
   }
 
   await todoMapQueryPrefetch(queryClient, session.user.id);
